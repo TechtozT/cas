@@ -1,0 +1,149 @@
+
+.brand-link, .main-header{
+  background-color: #17a2b8 !important;
+  border-bottom: none !important;
+}
+
+.brand-link{
+  border-right: 1px solid #0a2f39 !important;
+}
+
+
+.content-wrapper{
+  background-color: #ffffff;
+}
+
+.page-title{
+  font-size: 18px;
+  color: #313131 !important;
+  font-weight: 600;
+}
+
+
+.hover-pointer:hover{
+  cursor: pointer;
+}
+
+.no-outline:focus {
+  outline: none;
+}
+
+.scrollable{
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.display-none{
+  display: none !important;
+}
+
+.h-pointer:hover{
+  cursor: pointer;
+}
+
+
+/* Colors */
+.color-purple{
+  color: purple;
+}
+
+.color-cyan{
+  color: #136280;
+}
+
+.color-red{
+  color: #ff332c;
+}
+
+.color-orange{
+  color: darkorange;
+}
+
+.color-light-blue{
+  color: #0c5460;
+}
+
+.color-cyan2{
+  color: #17a2b8;
+}
+
+.color-purple2{
+  color: #5B5EA6;
+}
+
+.color-dark{
+  color: #101010;
+}
+
+.color-light-red{
+  color: #ff5520;
+}
+
+.color-light-green{
+  color: #155724;
+}
+
+
+
+/* Alerts */
+.alert-light-blue{
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border: 1px solid #bee5eb;
+}
+
+.alert-light-blue:hover{
+  color: #0a2f39;
+  background-color: #d1ecf1;
+  border: 1px solid #bee5eb;
+}
+
+
+.alert-purple{
+  background-color: #ffebfa;
+  color: purple;
+  border: 1px solid #f1dfed;
+}
+
+.alert-orange{
+  background-color: #fff8f9;
+  color: darkorange;
+  border: 1px solid #f5eeef;
+}
+
+.alert-loket{
+  background-color: #e5f3ff;
+  color: #17a2b8;
+  border: 1px solid #d7e2ee;
+}
+
+.alert-light-red{
+  background-color: #fff8eb;
+  color: #ff5520;
+  border: 1px solid #f8f3e5;
+}
+
+.alert-light-green{
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.alert-light-purple{
+  background-color: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
+}
+
+.alert-light-yellow{
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.alert-dark{
+  background-color: #e0e0e0;
+  color: #5B5EA6;
+  border: 1px solid #d4d4d4;
+}
+
