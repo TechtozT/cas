@@ -106,6 +106,34 @@ const institution = new Schema({
 });
 
 const criteria = new Schema({
+  genderBalance:{ // Try to balance gender if the applicants aceeds max allocation
+    shouldBalanceGender: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
+
+    malesPercent: {
+      type: Number,
+      required: true,
+      default: 0  // Not specified
+    }
+  },
+
+  levelBalance: { // only applied for A-level/Diploma
+    shouldBalanceLevel: {
+      type: Boolean,
+      required: true,
+      default: false
+    },
+
+    diplomaPercent: {
+      type: Number,
+      required: true,
+      default: 0  // Not specified
+    }
+  },  
+
   collegeLevel: { // college level criteria
 
   },
