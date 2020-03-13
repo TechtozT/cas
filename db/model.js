@@ -173,7 +173,7 @@ const criteria = new Schema({
     aLevelToDiploma: {  // Conversion factor
       type: Number,
       required: true,
-      default: 0
+      default: 0  // It means we just convert gp to gpa {gpa = gp / totalSubject}
     }
   }
 });

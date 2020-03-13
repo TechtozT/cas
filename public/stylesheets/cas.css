@@ -147,3 +147,13 @@
   border: 1px solid #d4d4d4;
 }
 
+.router-link-exact-active{
+  background-color: #17a2b8 !important;
+  color: #fff !important;
+}
+
+.nav-item >.active{
+  background-color:inherit !important;
+  color: #c2c7d0 !important;
+}
+
