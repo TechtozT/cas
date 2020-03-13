@@ -14,9 +14,9 @@ mongoose.connect(urls.DB_URL, {useNewUrlParser: true,  useUnifiedTopology: true 
 
 
 /* 
-  Applicants may be applying thgough High school or  college.
-  But all these can be tracked using indexNo. Problem is how can we inergrate these
-  with the college in which the results are from different data soruces. Unless 
+  Applicants may be applying through High school or  college.
+  But all these can be tracked using indexNo. Problem is how can we integrate these
+  with the college in which the results are from different data sources. Unless 
   TCU has central database for college results like NECTA.
 */
 const applicant = new Schema({
@@ -40,7 +40,7 @@ const applicant = new Schema({
     unique: true,
   },
 
-  phoneNomber: {
+  phoneNumber: {
     type: String,
     required: true,
     unique: true,
@@ -98,7 +98,7 @@ const institution = new Schema({
       ref: 'Criteria'
     },
 
-    maxCandidates: {  // max accomodation of the students in this program
+    maxCandidates: {  // max accommodation of the students in this program
       type: Number,
       required: true
     },
@@ -106,7 +106,7 @@ const institution = new Schema({
 });
 
 const criteria = new Schema({
-  genderBalance:{ // Try to balance gender if the applicants aceeds max allocation
+  genderBalance:{ // Try to balance gender if the applicants accedes max allocation
     shouldBalanceGender: {
       type: Boolean,
       required: true,
@@ -168,7 +168,13 @@ const criteria = new Schema({
         type: String,
         required: true
       }
-    }]
+    }],
+
+    aLevelToDiploma: {  // Conversion factor
+      type: Number,
+      required: true,
+      default: 0
+    }
   }
 });
 
@@ -180,7 +186,7 @@ const application = new Schema({
   },
 
   status: {
-    isComplete: { // to track incomplete applications {e.g unpayed, ...}
+    isComplete: { // to track incomplete applications {e.g unpaid, ...}
       type: Boolean,
       required: true,
       default: false
@@ -240,7 +246,7 @@ const progList = new Schema({
   }
 });
 
-// For admins to tweek the applications behaviour
+// For admins to tweak the applications behaviour
 const attribute = new Schema({
   maxAppliedInstitutions: {
     type: Number,
@@ -254,7 +260,7 @@ const attribute = new Schema({
 });
 
 // For demonstrations: T
-//his results should be queried from the respective darta source
+//his results should be queried from the respective data source
 
 const highSchoolResults = new Schema({
 
