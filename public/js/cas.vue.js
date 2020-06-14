@@ -1,331 +1,296 @@
-// vue logics goes in here
-Vue.component('btn-counter', {
-  data: function(){
-    return {
-      count: 0
-    }
-  },
+Vue.component("inst", {
 
-  template: btn_counter
+  props: ["name", "prog", "site", "apps", "desc", "id"],
+
+  template:
+  `
+    <div class="col-12">
+      <router-link class="a-default" to="/institutions/institution/ {{ id }}">
+        <div class="card h-pointer elevate">
+          <h5 class="card-header">{{ name }}</h5>
+          <div class="card-body">
+            <button class="btn btn-info badge-pill mr-3">
+              {{ prog }} Programs
+            </button>
+            <!-- <button class="btn btn-danger badge-pill">
+              {{ apps }} Application -->
+            </button>
+            <a class="float-right" href="#site"><b>{{ site }}</b></a>
+            <div class="pt-3">
+              {{ desc }}
+            </div>
+          </div>
+        </div>
+      </router-link>
+    </div>
+  
+  `,
 });
 
 const Apply = {
-  data: function(){
-    return {
-      applicatio_status: {
-        completed: false
-      }
+
+  data: ()=>{
+    return{
+      institutions: [{
+        id: "654578867894",
+        name: "University of Dar-es-salaam",
+        programs: [
+          {
+            id: "prog-id1",
+            name: "Bachelor of science in computer science",
+            choice: 1
+          },
+
+          {
+            id: "prog-id1",
+            name: "Bachelor of science Electronics",
+            choice: 2
+          }
+        ]
+      },
+      {
+        id: "77867738948",
+        name: "Sokoine University of Agriculture",
+        programs: [
+          {
+            id: "prog-id1",
+            name: "Bachelor of science in computer science",
+            choice: 1
+          },
+
+          {
+            id: "prog-id1",
+            name: "Bachelor of science in computer science",
+            choice: 2
+          }
+        ]
+      },
+    ]
     }
   },
 
-  template: `<div class="row">
-  <div class="col-lg-3 col-6">
-    <!-- small box -->
-    <div class="small-box bg-info">
-      <div class="inner">
-        <h3>150</h3>
+  template: 
+  `
 
-        <p>New Orders</p>
+  <div>
+    <div v-if="institutions.length===0 || !institutions">
+      <div class="col-12 alert alert-light-red">You don't have any application, click 
+      <b>"Start new application"</b> to apply now</div>
+      
+      <div class="row mb-5">
+        <button class="btn btn-info mx-auto"> Start new application</button>
       </div>
-      <div class="icon">
-        <i class="ion ion-bag"></i>
+    </div>
+    
+      
+    <div v-if="institutions.length > 0" class="card">  
+      <h4 class="card-header bg-light">
+        <b>Your application</b>
+      </h4>
+      <div class="card-body pb-0">
+        <p>You can change the application at any time before you finally submit it. To change 
+        the priority rearrange the programs by dragging one over another.</p>
       </div>
-      <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      <ul class="list-group list-group-flush">
+        <draggable v-model="institutions" group="institutions" @start="drag=true" @end="drag=false">
+          <li v-for="element in institutions" :key="element.id" 
+          class="list-group-item h-pointer py-3" data-toggle="modal" data-target="#progs-modal">
+          <span class="mr-2"><i class="fas fa-arrows-alt"></i></span> <b>{{element.name}}</b>
+          </li>
+        </draggable>
+      </ul>
+      <div class="card-footer">
+        <div class="col-12">
+          <div class="row">
+            <button class="btn btn-info mx-auto">Submit Your Application</button>
+            </div>
+        </div>
+      </div>  
+    </div>
+
+
+
+
+
+    <div
+    class="modal fade"
+    id="progs-modal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="progs-modal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title">University of Dar-es-salaam</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>You selected these programs from University of Dar-es-salaam</p>
+          <ul class="list-group list-group-flush">
+            <draggable v-model="institutions.filter(inst=> inst.id==='654578867894')[0].programs" group="programs" @start="drag=true" @end="drag=false">
+              <li v-for="element in institutions.filter(inst=> inst.id==='654578867894')[0].programs" :key="element.id" 
+              class="list-group-item h-pointer py-3">
+              <span class="mr-2"><i class="fas fa-arrows-alt"></i></span> <b>{{element.name}}</b>
+              </li>
+            </draggable>
+          </ul>
+
+          
+        </div>
+        <div class="modal-footer bg-light">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-primary">
+            Save changes
+          </button>
+        </div>
+      </div>
     </div>
   </div>
-  <!-- ./col -->
-  <div class="col-lg-3 col-6">
-    <!-- small box -->
-    <div class="small-box bg-success">
-      <div class="inner">
-        <h3>53<sup style="font-size: 20px">%</sup></h3>
 
-        <p>Bounce Rate</p>
+
+
+    
+  </div>`,
+};
+
+const institutions = {
+
+  template: 
+  `<div class="row">
+    <inst v-for="inst in this.$parent.$data.institutions"
+    v-bind:id = "inst.id"
+    v-bind:name = "inst.name"
+    v-bind:prog = "inst.programs"
+    v-bind:apps = "inst.application"
+    v-bind:site = "inst.website"
+    v-bind:desc = "inst.desc"></inst>
+  </div>`,
+};
+
+
+// Single institutions.
+const institution = {
+
+  template: 
+  `<div class="institution">
+    <!-- {{ $route.params.id }} -->
+    <!-- <h3>University of Dar-es-salaam</h3> -->
+    <div class="card">
+      <h3 class="card-header">University of Dar-es-salaam</h3>
+      <div class="card-body">
+      <table class="table">
+      <thead>
+        <tr>
+          <th style="width: 10px"><h5>#</h5></th>
+          <th><h5>Program name</h5></th>
+          
+        </tr>
+      </thead>
+      <tbody class="table-elevate">
+        <tr data-toggle="modal" data-target="#app-modal">
+          <td>1.</td>
+          <td>
+          <b> Bachelor of science in computer science 
+          </b> <i class = "fas fa-check color-light-green" ></i>
+          <i class="float-right far fa-times-circle color-red"
+          data-toggle="tooltip" data-placement="top" title="Not qualified"></i>
+          <br>
+          <small class="text-muted">[Physics: B, Chemistry: B]</small>
+          </td>
+          
+        </tr>
+        <tr>
+          <td>2.</td>
+          <td><b>Bachelor environmental science</b>
+          <i class="float-right far fa-check-circle color-light-green"
+          data-toggle="tooltip" data-placement="top" title="Qualified"></i>
+          <br>
+          <small class="text-muted"> [Biology: B, Chemistry: B, Physics: C] </small>
+          </td>
+          
+        </tr>
+        <tr>
+          <td>3.</td>
+          <td><b>Bachelor of electronics engineering</b>
+          <i class="float-right far fa-check-circle color-light-green"
+          data-toggle="tooltip" data-placement="top" title="Qualified"></i>
+          <br>
+          <small class="text-muted"> [Biology: B, Chemistry: B, Physics: C] </small>
+          </td>
+          
+        </tr>
+        <tr>
+          <td>4.</td>
+          <td><b>Bachelor of law</b>
+          <i class="float-right far fa-check-circle color-light-green"
+          data-toggle="tooltip" data-placement="top" title="Qualified"></i>
+          <br>
+          <small class="text-muted"> [Biology: B, Chemistry: B, Physics: C] </small>
+          </td>
+          
+        </tr>
+      </tbody>
+    </table>
       </div>
-      <div class="icon">
-        <i class="ion ion-stats-bars"></i>
-      </div>
-      <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
     </div>
-  </div>
-  <!-- ./col -->
-  <div class="col-lg-3 col-6">
-    <!-- small box -->
-    <div class="small-box bg-warning">
-      <div class="inner">
-        <h3>44</h3>
-
-        <p>User Registrations</p>
-      </div>
-      <div class="icon">
-        <i class="ion ion-person-add"></i>
-      </div>
-      <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-    </div>
-  </div>
-  <!-- ./col -->
-  <div class="col-lg-3 col-6">
-    <!-- small box -->
-    <div class="small-box bg-danger">
-      <div class="inner">
-        <h3>65</h3>
-
-        <p>Unique Visitors</p>
-      </div>
-      <div class="icon">
-        <i class="ion ion-pie-graph"></i>
-      </div>
-      <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-    </div>
-  </div>
-
-  <!-- ./col -->
-</div>`
-}
-
-const Payments = {
-  data: function(){
-    return {
-      payment_status: {
-        paid: true
-      }
-    }
-  },
-
-  template: `<div v-if="payment_status.paid" class="card card-default color-palette-box">
-  <div class="card-header">
-    <h3 class="card-title">
-      <i class="fas fa-tag"></i>
-      Color Palette
-    </h3>
-  </div>
-  <div class="card-body">
-    <div class="col-12">
-      <h5>Theme Colors</h5>
-    </div>
-    <!-- /.col-12 -->
-    <div class="row">
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center">Primary</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-primary color-palette"><span>#007bff</span></div>
-          <div class="bg-primary disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center">Secondary</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-secondary color-palette"><span>#6c757d</span></div>
-          <div class="bg-secondary disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center">Info</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-info color-palette"><span>#17a2b8</span></div>
-          <div class="bg-info disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center">Success</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-success color-palette"><span>#28a745</span></div>
-          <div class="bg-success disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-warning">Warning</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-warning color-palette"><span>#ffc107</span></div>
-          <div class="bg-warning disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center">Danger</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-danger color-palette"><span>#dc3545</span></div>
-          <div class="bg-danger disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-    </div>
-    <!-- /.row -->
-    <div class="col-12">
-      <h5 class="mt-3">Black/White Nuances</h5>
-    </div>
-    <!-- /.col-12 -->
-    <div class="row">
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center">Black</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-black color-palette"><span>#000000</span></div>
-          <div class="bg-black disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center">Gray Dark</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-gray-dark color-palette"><span>#343a40</span></div>
-          <div class="bg-gray-dark disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center">Gray</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-gray color-palette"><span>#adb5bd</span></div>
-          <div class="bg-gray disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-light">Light</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-light color-palette"><span>#1f2d3d</span></div>
-          <div class="bg-light disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-    </div>
-    <!-- /.row -->
-    <div class="col-12">
-      <h5 class="mt-3">Colors</h5>
-    </div>
-    <!-- /.col-12 -->
-    <div class="row">
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-indigo">Indigo</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-indigo color-palette"><span>#6610f2</span></div>
-          <div class="bg-indigo disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-lightblue">Lightblue</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-lightblue color-palette"><span>#3c8dbc</span></div>
-          <div class="bg-lightblue disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-navy">Navy</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-navy color-palette"><span>#001f3f</span></div>
-          <div class="bg-navy disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-purple">Purple</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-purple color-palette"><span>#605ca8</span></div>
-          <div class="bg-purple disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-fuchsia">Fuchsia</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-fuchsia color-palette"><span>#f012be</span></div>
-          <div class="bg-fuchsia disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-pink">Pink</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-pink color-palette"><span>#e83e8c</span></div>
-          <div class="bg-pink disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-maroon">Maroon</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-maroon color-palette"><span>#d81b60</span></div>
-          <div class="bg-maroon disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-orange">Orange</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-orange color-palette"><span>#ff851b</span></div>
-          <div class="bg-orange disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-lime">Lime</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-lime color-palette"><span>#01ff70</span></div>
-          <div class="bg-lime disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-teal">Teal</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-teal color-palette"><span>#39cccc</span></div>
-          <div class="bg-teal disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-sm-4 col-md-2">
-        <h4 class="text-center bg-olive">Olive</h4>
-
-        <div class="color-palette-set">
-          <div class="bg-olive color-palette"><span>#3d9970</span></div>
-          <div class="bg-olive disabled color-palette"><span>Disabled</span></div>
-        </div>
-      </div>
-      <!-- /.col -->
-    </div>
-    <!-- /.row -->
-  </div>
-  <!-- /.card-body -->
-</div>`
-}
+  </div>`,
+};
 
 const routes = [
-  {path: '/apply', component: Apply},
-  {path: '/payments', component: Payments}
+  { path: "/application", component: Apply },
+  { path: "/institutions", component: institutions },
+  { path: "/institutions/institution/:id", component: institution },
 ];
 
 const router = new VueRouter({
-  routes
+  routes,
 });
 
-
-new Vue({
-  el: '#app',
-  router
+const vm = new Vue({
+  el: "#app",
+  router,
+  data: {
+    institutions: [{
+      id: "654578867894",
+      name: "University of Dar-es-salaam",
+      website: "www.udsm.ac.tz",
+      desc: `This university description is about some 
+      length texts to help fa-users to get some incite. 
+      This university description is about some length 
+      texts to help fa-users to get some incite. 
+      This university description is about some 
+      length texts to help fa-users to get some incite.`,
+      programs: 9,
+      application: 100,
+    },
+    {
+      id: "77867738948",
+      name: "Sokoine University of Agriculture",
+      website: "www.sua.ac.tz",
+      desc: `This university description is about some 
+      length texts to help fa-users to get some incite. 
+      This university description is about some length 
+      texts to help fa-users to get some incite. 
+      This university description is about some 
+      length texts to help fa-users to get some incite.`,
+      programs: 120,
+      application: 6908,
+    },
+  ]
+  }
 });
