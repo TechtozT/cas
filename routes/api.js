@@ -9,17 +9,19 @@ const models = {
   application: mod.Application,
   attribute: mod.Attribute,
   criteria: mod.Criteria,
-  Institution: mod.Institution,
+  institution: mod.Institution,
+  program: mod.Program,
 };
 
 const { create, get, remove, update } = require("../resolvers/index");
 
-const checkAuth = (req, res) => {
+const checkAuth = (req, res, next) => {
   /* Check route first */
   const entity = req.params.entity;
   if (!models[entity]) return res.sendStatus(404);
   /* Check if authorized to this route */
-  if (!auth.isAuth(req.headers.authorization)) return res.json({ auth: false });
+  // if (!auth.isAuth(req.headers.authorization)) return res.status(403).json({ auth: false });
+  next();
 };
 
 router.post("/:entity", checkAuth, async (req, res) => {
@@ -27,7 +29,13 @@ router.post("/:entity", checkAuth, async (req, res) => {
 });
 
 router.get("/:entity", checkAuth, async (req, res) => {
-  return res.json(get(models[entity], req.body.options, req.body.projection));
+  const result = await get(
+    models[req.params.entity],
+    req.query.options,
+    req.query.projection,
+    req.query.population
+  );
+  return res.json(result);
 });
 
 router.put("/:entity", checkAuth, async (req, res) => {
@@ -69,7 +77,6 @@ router.post("/auth/:entry", (req, res) => {
     if (!result.user)
       return res.json({
         auth: false,
-        user: result.user,
         message: "User not found",
       });
 

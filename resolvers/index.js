@@ -5,20 +5,30 @@ module.exports = {
     const newEntity = new model(data);
     try {
       newEntity = await newEntity.save();
-      if (!newEntity)
-        throw new Error(`Failed to create, please try again`);
+      if (!newEntity) throw new Error(`Failed to create, please try again`);
       return unpackDoc(newEntity);
     } catch (err) {
       throw err;
     }
   },
 
-  get: async (model, options, projection) => {
+  get: async (model, options, projection, population) => {
+    if (!projection) projection = {};
+    if (!options) options = {};
+    // if(!population) population = {};
+    
     try {
-      const result = await model.find(options, projection);
-      if (!result)
-        throw new Error("Failed to fetch, please try again");
-      return unpackDoc(result);
+      if (typeof options === "string")
+      options = JSON.parse(options);
+
+      let result;
+      if (population) {
+        result = await model.find(options, projection).populate(population);
+      } else {
+        result = await model.find(options, projection);
+      }
+      if (!result) throw new Error("Failed to fetch, please try again");
+      return result;
     } catch (err) {
       throw err;
     }
@@ -27,7 +37,7 @@ module.exports = {
   remove: async (model, ids) => {
     // Remove is done by ID's
     try {
-      const result = await model.remove({_id: {$in: ids}});
+      const result = await model.remove({ _id: { $in: ids } });
       if (!result) throw new Error("Failed to remove, please try again");
       return unpackDoc(result);
     } catch (err) {
@@ -38,7 +48,7 @@ module.exports = {
   update: async (model, ids, update) => {
     // Updates is done by ID's
     try {
-      const result = await model.updateMany({_id: {$in: ids}}, update);
+      const result = await model.updateMany({ _id: { $in: ids } }, update);
       if (!result) throw new Error("Failed to update, please again");
       return unpackDoc(result);
     } catch (err) {

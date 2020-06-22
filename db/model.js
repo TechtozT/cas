@@ -38,6 +38,11 @@ const applicant = new Schema(
   { timestamps: true }
 );
 
+const program = new Schema({
+  name: { type: String, required: true },
+  level: { type: String, required: true },
+});
+
 const institution = new Schema(
   {
     // Programs -> criteria -> mandatory-sub, coll-level, high-school-level
@@ -48,16 +53,19 @@ const institution = new Schema(
     desc: { type: String },
     programs: [
       {
-        name: { type: String, required: true },
+        /* name: { type: String, required: true },
 
         // 0 - 4. Certificate - PHD.
-        level: { type: Number, required: true },
+        level: { type: Number, required: true }, */
+        program: { type: ObjectID, required: true, ref: "Programs" },
 
         // Can choose the available standard criteria (i.e TCU) or create new one.
         criteria: { type: ObjectID, required: true, ref: "Criteria" },
 
         // max accommodation of the students in this program
         maxCandidates: { type: Number, required: true },
+
+        allocatedCandidates: { type: Number, required: true, default: 0 },
 
         // 0 - 1. 0 means balance is not considered.
         malesToFemalesRatio: { type: Number, required: true, default: 0 },
@@ -67,7 +75,7 @@ const institution = new Schema(
 
         // a-level to diploma conversion factor. 0 -> gp = gpa * nSubjects.
         // -1 -> It doesn't apply, that is this application is not for bachelor.
-        adFactor: { type: Number, required: true, default: 0 },
+        aLevelToDiplomaFactor: { type: Number, required: true, default: 0 },
       },
     ],
     applications: [
@@ -80,16 +88,16 @@ const institution = new Schema(
 
 const criteria = new Schema(
   {
-    highSchoolLevelEntry: {
+    school: {
       // a -> A-Level, o -> O-level.
-      minEntryLevel: { type: String, required: true, enum: ["a", "o"] },
-      minGradPoint: { type: Number, required: true },
+      level: [{ type: String, required: true, enum: ["a", "o"] }],
+      gradPoint: { type: Number, required: true },
       // PCM, PGM, PCB, CBG, EGM, ...
-      combinations: [{ type: String, required: true }],
-      mandatorySubjects: [
+      programs: [{ type: String, required: true }],
+      mandatorySubs: [
         {
           name: { type: String, unique: true },
-          minGrade: { type: Number },
+          grade: { type: Number },
         },
       ],
       // c -> certificate, ...
@@ -100,34 +108,48 @@ const criteria = new Schema(
       },
     },
 
-    collegeLevelEntry: {},
+    college: {},
   },
   { timestamps: true }
 );
 
-const application = new Schema(
-  {
-    controlNumber: { type: String, required: true, unique: true },
-    paymentStatus: {
-      type: String,
-      required: true,
-      enum: ["p", "h", "n"],
+const application = new Schema({
+  indexNo: { type: String, required: true },
+  applicant: { type: ObjectID, required: true },
+  controlNumber: { type: String, required: true, unique: true },
+  paymentStatus: {
+    type: String,
+    required: true,
+    enum: ["p", "h", "n"],
+  },
+  year: {
+    type: Number,
+    required: true,
+    default: new Date(Date.now()).getFullYear(),
+  },
+  level: { type: String, required: true },
+
+  entry: [
+    {
+      program: { type: ObjectID, required: true },
+      choice: { type: Number, required: true },
+      point: { type: Number, required: true },
+      institutions: [
+        {
+          inst: { type: ObjectID, required: true },
+          priority: { type: Number, required: true },
+        },
+      ],
     },
+  ],
 
-    entries: [
-      {
-        choiceNo: { type: Number, required: true }, // 1 - 5.
-        institution: { type: ObjectID, required: true, ref: "Institution" },
-        program: { type: ObjectID, required: true }, // Has its own criteria.
-      },
-    ],
-    /**
-     * 0 => pending, 1 - 5 => accepted at entries.choiceNo, -1 => rejected.
-     */
-    acceptedChoice: { type: Number, required: true, default: 0 },
-  },
-  { timestamps: true }
-);
+  allocated: { type: Boolean, required: true, default: false },
+  allocatedInst: { type: ObjectID, ref: "Institution" },
+  allocatedProg: { type: ObjectID },
+});
+
+// Index year for faster access applications by year.
+application.index({ year: 1 });
 
 // For admins to tweak the applications behaviour
 const attribute = new Schema({
@@ -152,6 +174,8 @@ const attribute = new Schema({
     required: true,
   },
 
+  maxAppliedPrograms: { type: Number, required: true, default: 10 },
+
   level: { type: String, required: true, enum: ["c", "d", "b", "m", "p"] },
 });
 
@@ -159,10 +183,10 @@ const attribute = new Schema({
 // This results should be queried from the respective data source
 const schoolResult = new Schema({
   indexNo: { type: String, required: true },
-  level: { type: String, required: true, enum: ["O", "A"] },
+  level: { type: String, required: true, enum: ["o", "a"] },
   yearEnrolled: { type: String, required: true },
   center: { type: String, required: true },
-  gp: { type: Number, required: true },
+  gradePoint: { type: Number, required: true },
   program: { type: String, required: true }, // combination: PCM, PCB, CBG, EGM ....
   subjects: [
     {
@@ -171,10 +195,11 @@ const schoolResult = new Schema({
     },
   ],
 });
+schoolResult.index({ indexNo: 1 });
 
 const collegeResult = new Schema({
-  indexNo: {type: String, required: true},
-  level: { type: String, required: true, enum: ["O", "A"] },
+  indexNo: { type: String, required: true },
+  level: { type: String, required: true, enum: ["c", "d", "b", "m"] },
   yearEnrolled: { type: String, required: true },
   center: { type: String, required: true },
   gpa: { type: Number, required: true },
@@ -188,5 +213,10 @@ module.exports = {
   Application: mongoose.model("Application", application, "applications"),
   Attribute: mongoose.model("Attribute", attribute, "attributes"),
   SchoolResult: mongoose.model("SchoolResult", schoolResult, "school_results"),
-  CollegeResult: mongoose.model("CollegeResult", collegeResult, "collage_results"),
+  CollegeResult: mongoose.model(
+    "CollegeResult",
+    collegeResult,
+    "collage_results"
+  ),
+  Program: mongoose.model("Program", program, "programs"),
 };

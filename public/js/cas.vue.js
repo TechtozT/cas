@@ -1,31 +1,91 @@
-Vue.component("inst", {
+Vue.component("program", {
 
-  props: ["name", "prog", "site", "apps", "desc", "id"],
+  props: ["name", "id", "index", "selected", "qualified"],
 
   template:
-  `
-    <div class="col-12">
-      <router-link class="a-default" to="/institutions/institution/ {{ id }}">
-        <div class="card h-pointer elevate">
-          <h5 class="card-header">{{ name }}</h5>
-          <div class="card-body">
-            <button class="btn btn-info badge-pill mr-3">
-              {{ prog }} Programs
-            </button>
-            <!-- <button class="btn btn-danger badge-pill">
-              {{ apps }} Application -->
-            </button>
-            <a class="float-right" href="#site"><b>{{ site }}</b></a>
-            <div class="pt-3">
-              {{ desc }}
-            </div>
-          </div>
-        </div>
-      </router-link>
-    </div>
-  
+`
+  <tr @click="goToInst(id, name)" >
+    <td>{{ index + 1 }}</td>
+    <td>
+    <b> {{ name }}
+    </b> <i v-if="selected" class = "fas fa-check color-light-green" ></i>
+    
+    <i v-if="!qualified" class="float-right far fa-times-circle color-red"
+    data-toggle="tooltip" data-placement="top" title="Not qualified"></i>
+    <i v-else class="float-right far fa-check-circle color-light-green"
+    data-toggle="tooltip" data-placement="top" title="Qualified"></i>
+    <br>
+    <small class="text-muted">[Physics: B, Chemistry: B, Biology: B]</small>
+    </td>
+    
+  </tr>
   `,
+
+  methods: {
+    goToInst: (progID, progName)=>{
+      router.push({ path: `/institutions/${progID}/${progName}` });
+    }
+  },
+  
 });
+
+const programs = {
+  template: 
+  `
+  <div class="card">
+    <h3 class="card-header">Programs</h3>
+    <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width: 10px"><h5>#</h5></th>
+          <th><h5>Program name</h5></th>  
+        </tr>
+      </thead>
+      <tbody v-if="progs && progs.length" class="table-elevate">
+        <program v-for="(prog, index) in progs"
+        v-bind:id = "prog._id"
+        v-bind:key = "prog._id"
+        v-bind:index = "index"
+        v-bind:name = "prog.name"
+        v-bind:qualified = "prog.qualified"
+        v-bind:selected = "prog.selected"
+        
+        ></program>
+      </tbody>
+    </table>
+    </div>
+  </div>
+  `,
+
+  data() {
+    return {
+      progs: [],
+    }
+  },
+
+  methods: {
+    loadPrograms: function(){
+      axios.get("/api/program")
+      .then((res)=>{
+        // hard coding 
+        res.data.forEach(function (pro){
+          pro.selected = false;
+          pro.qualified = true;
+        });
+
+        this.progs = res.data;
+      
+      }).catch(function(err){
+        console.log(err)
+      })
+    }
+  },
+
+  created(){
+    this.loadPrograms()
+  }
+};
 
 const Apply = {
 
@@ -68,6 +128,8 @@ const Apply = {
     ]
     }
   },
+
+ 
 
   template: 
   `
@@ -161,26 +223,33 @@ const Apply = {
       </div>
     </div>
   </div>
-
-
-
-    
   </div>`,
 };
 
-const institutions = {
+
+Vue.component("inst", {
+  props: ["name", "id", "selected", "website"],
 
   template: 
-  `<div class="row">
-    <inst v-for="inst in this.$parent.$data.institutions"
-    v-bind:id = "inst.id"
-    v-bind:name = "inst.name"
-    v-bind:prog = "inst.programs"
-    v-bind:apps = "inst.application"
-    v-bind:site = "inst.website"
-    v-bind:desc = "inst.desc"></inst>
-  </div>`,
-};
+  `
+  <tr>
+    <td>
+    <div class="custom-control custom-checkbox">
+      <input v-if="selected" class="custom-control-input" type="checkbox" :id="id" checked>
+      <input v-else class="custom-control-input" type="checkbox" :id="id">
+      <label :for="id" class="custom-control-label"></label>
+    </div>
+    </td>
+    <td><b>{{name}}</b>
+    <i v-if="selected" class="float-right far fa-check-circle color-light-green"
+    data-toggle="tooltip" data-placement="top" title="Qualified"></i>
+    <br>
+    <small class="text-muted"> <a href="'website'"> {{website}} </a> </small>
+    </td>
+    
+  </tr>
+  `
+})
 
 
 // Single institutions.
@@ -191,70 +260,180 @@ const institution = {
     <!-- {{ $route.params.id }} -->
     <!-- <h3>University of Dar-es-salaam</h3> -->
     <div class="card">
-      <h3 class="card-header">University of Dar-es-salaam</h3>
+      <h5 class="card-header alert-light-blue">
+      Select some Universities below of your choice for <b>{{$route.params.progName}}</b>.
+      </h5>
       <div class="card-body">
       <table class="table">
-      <thead>
+      <!-- <thead>
         <tr>
-          <th style="width: 10px"><h5>#</h5></th>
-          <th><h5>Program name</h5></th>
+          <th style="width: 10px"><h6><i class="fas fa-check"></i></h6></th>
+          <th><h5>Name</h5></th>
           
         </tr>
-      </thead>
-      <tbody class="table-elevate">
-        <tr data-toggle="modal" data-target="#app-modal">
-          <td>1.</td>
-          <td>
-          <b> Bachelor of science in computer science 
-          </b> <i class = "fas fa-check color-light-green" ></i>
-          <i class="float-right far fa-times-circle color-red"
-          data-toggle="tooltip" data-placement="top" title="Not qualified"></i>
-          <br>
-          <small class="text-muted">[Physics: B, Chemistry: B]</small>
-          </td>
-          
-        </tr>
-        <tr>
-          <td>2.</td>
-          <td><b>Bachelor environmental science</b>
-          <i class="float-right far fa-check-circle color-light-green"
-          data-toggle="tooltip" data-placement="top" title="Qualified"></i>
-          <br>
-          <small class="text-muted"> [Biology: B, Chemistry: B, Physics: C] </small>
-          </td>
-          
-        </tr>
-        <tr>
-          <td>3.</td>
-          <td><b>Bachelor of electronics engineering</b>
-          <i class="float-right far fa-check-circle color-light-green"
-          data-toggle="tooltip" data-placement="top" title="Qualified"></i>
-          <br>
-          <small class="text-muted"> [Biology: B, Chemistry: B, Physics: C] </small>
-          </td>
-          
-        </tr>
-        <tr>
-          <td>4.</td>
-          <td><b>Bachelor of law</b>
-          <i class="float-right far fa-check-circle color-light-green"
-          data-toggle="tooltip" data-placement="top" title="Qualified"></i>
-          <br>
-          <small class="text-muted"> [Biology: B, Chemistry: B, Physics: C] </small>
-          </td>
-          
-        </tr>
+      </thead> -->
+      <tbody v-if="institutions && institutions.length" class="table-elevate">
+        <inst v-for="inst in institutions"
+          v-bind:id = inst._id
+          v-bind:key = inst._id
+          v-bind:name = inst.name
+          v-bind:website = inst.website
+          v-bind:selected = inst.selected></inst>
       </tbody>
     </table>
       </div>
     </div>
   </div>`,
+
+
+
+
+
+
+
+
+
+
+
+/* template: `
+
+
+<div class="card">
+<div class="card-header">
+  <h3 class="card-title">DataTable with default features</h3>
+</div>
+<!-- /.card-header -->
+<div class="card-body">
+  <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4">
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <div class="dataTables_length" id="example1_length">
+          <label
+            >Show
+            <select
+              name="example1_length"
+              aria-controls="example1"
+              class="custom-select custom-select-sm form-control form-control-sm"
+              ><option value="10">10</option
+              ><option value="25">25</option
+              ><option value="50">50</option
+              ><option value="100">100</option></select
+            >
+            entries</label
+          >
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div id="example1_filter" class="dataTables_filter">
+          <label
+            >Search:<input
+              type="search"
+              class="form-control form-control-sm"
+              placeholder=""
+              aria-controls="example1"
+          /></label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <table
+          id="example1"
+          class="table table-bordered dataTable"
+          role="grid"
+          aria-describedby="example1_info"
+        >
+          <thead>
+            <tr role="row">
+              <th
+                class="sorting"
+                tabindex="0"
+                aria-controls="example1"
+                rowspan="1"
+                colspan="1"
+                aria-label="Selection"
+              > Select
+              </th>
+
+              <th
+                class="sorting"
+                tabindex="0"
+                aria-controls="example1"
+                rowspan="1"
+                colspan="1"
+                aria-label="Program Name"
+              > University Name
+              </th>
+            </tr>
+          </thead>
+          <tbody v-if="institutions && institutions.length" class="table-elevate">
+            <inst v-for="inst in institutions"
+              v-bind:id = inst._id
+              v-bind:key = inst._id
+              v-bind:name = inst.name
+              v-bind:website = inst.website
+              v-bind:selected = inst.selected></inst>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.card-body -->
+</div>
+
+
+`,
+ */
+
+
+
+
+
+
+
+
+  data() {
+    return {
+      institutions: [],
+    }
+  },
+
+  methods: {
+    loadInstitutions: function(){
+      
+      axios.get("/api/institution", {
+        params: {
+          options: JSON.stringify({
+            "programs.program": this.$route.params.progId,
+          })
+        }
+      })
+      .then((res)=>{
+        // hard coding 
+        /* res.data.forEach(function (inst){
+          inst.selected = true;
+        }); */
+
+        this.institutions = res.data;
+      
+      }).catch(function(err){
+        console.log(err)
+      })
+    }
+  },
+
+  created(){
+    this.loadInstitutions()
+  }
+
 };
 
 const routes = [
   { path: "/application", component: Apply },
-  { path: "/institutions", component: institutions },
-  { path: "/institutions/institution/:id", component: institution },
+  { path: "/programs", component: programs },
+  { path: "/institutions/:progId/:progName", component: institution },
 ];
 
 const router = new VueRouter({
@@ -265,32 +444,10 @@ const vm = new Vue({
   el: "#app",
   router,
   data: {
-    institutions: [{
-      id: "654578867894",
-      name: "University of Dar-es-salaam",
-      website: "www.udsm.ac.tz",
-      desc: `This university description is about some 
-      length texts to help fa-users to get some incite. 
-      This university description is about some length 
-      texts to help fa-users to get some incite. 
-      This university description is about some 
-      length texts to help fa-users to get some incite.`,
-      programs: 9,
-      application: 100,
-    },
-    {
-      id: "77867738948",
-      name: "Sokoine University of Agriculture",
-      website: "www.sua.ac.tz",
-      desc: `This university description is about some 
-      length texts to help fa-users to get some incite. 
-      This university description is about some length 
-      texts to help fa-users to get some incite. 
-      This university description is about some 
-      length texts to help fa-users to get some incite.`,
-      programs: 120,
-      application: 6908,
-    },
-  ]
-  }
+    
+  },
+
+  methods: {
+    
+  },
 });
