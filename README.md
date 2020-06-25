@@ -6,3 +6,7 @@
 
 ## NOTE: 
 You need to have NodeJS and mongo installed in your machine.
+
+
+### Not implemented
+1. User application for various year.

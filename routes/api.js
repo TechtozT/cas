@@ -3,6 +3,13 @@ const router = express.Router();
 
 const mod = require("../db/model");
 const auth = require("../auth/auth");
+/* const {
+  isQualifiedLevels,
+  checkMandatorySubjects,
+  validateUserCriteria,
+} = require("../cas/index"); */
+
+const { validateInstitutions } = require("../cas/api");
 
 const models = {
   applicant: mod.Applicant,
@@ -29,12 +36,25 @@ router.post("/:entity", checkAuth, async (req, res) => {
 });
 
 router.get("/:entity", checkAuth, async (req, res) => {
-  const result = await get(
-    models[req.params.entity],
-    req.query.options,
-    req.query.projection,
-    req.query.population
-  );
+  const entity = req.params.entity;
+  const options = req.query.options;
+  const projection = req.query.projection;
+  const population = req.query.population;
+
+  let result;
+  // If entity is institutions and program is specified.
+  if (entity === "institution") {
+    //! Hard code: this come from decode jwt
+    const user = "S1298.0245.2014";
+
+    const opt = JSON.parse(options);
+    if (opt.hasOwnProperty("programs.program")) {
+      result = await validateInstitutions(user, opt["programs.program"]);
+    }
+  } else {
+    result = await get(models[entity], options, projection, population);
+  }
+
   return res.json(result);
 });
 

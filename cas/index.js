@@ -80,7 +80,7 @@ const checkMandatorySubjects = (mandatorySubs, stdSubs) => {
   mandatorySubs.forEach((ms) => {
     let s = stdSubs.find((ss) => ss.name === ms.name);
     if (!s) return false;
-    if (gradeDict.indexOf(ms.grade > ss.grade)) return false;
+    if (gradeDict.indexOf(ms.grade > s.grade)) return false;
   });
 
   return true;
@@ -93,7 +93,7 @@ const checkMandatorySubjects = (mandatorySubs, stdSubs) => {
  */
 const validateUserCriteria = async (stdResult, programs) => {
   let stdLevel = "";
-  if (stdResult.level === "o" || stdResult === "a") {
+  if (stdResult.level === "o" || stdResult.level === "a") {
     stdLevel = "school";
   } else {
     stdLevel = "college";
@@ -115,7 +115,7 @@ const validateUserCriteria = async (stdResult, programs) => {
   } catch (err) {
     throw err;
   }
-  criteria = unpackDoc(criteria);
+  // criteria = unpackDoc(criteria);
 
   programs.forEach((e, i) => {
     // find the corresponding criteria from criteria set for this program
@@ -139,6 +139,40 @@ const validateUserCriteria = async (stdResult, programs) => {
 
     return (programs[i].qualified = true);
   });
+
+  return programs;
+};
+
+/**
+ * @param stdResult A student's examination result.
+ * @param criteria A university program's criteria.
+ * @param level The level for which this criteria we are validating {school, colleg}.
+ * @return Return true if a stdResult meet the criteria of the program.
+ */
+const validateResultOverProgram = (stdResult, criteria) => {
+  let stdLevel = "";
+  if (stdResult.level === "o" || stdResult.level === "a") {
+    stdLevel = "school";
+  } else {
+    stdLevel = "college";
+  }
+
+  if (criteria[stdLevel].gradePoint > stdResult.gradePoint) return false;
+
+  if (!criteria[stdLevel].programs.includes(stdResult.program)) return false;
+
+  for (let i = 0; i < criteria[stdLevel].mandatorySubs.length; i++) {
+    let manSub = criteria[stdLevel].mandatorySubs[i];
+    let s = stdResult.subjects.find((ss) => ss.name === manSub.name);
+    if (!s) {
+      return false;
+    }
+    // index of s.grade <= index of manSub.grade => true.
+    if (gradeDict.indexOf(s.grade) > gradeDict.indexOf(manSub.grade))
+      return false;
+  }
+
+  return true;
 };
 
 /**
@@ -152,7 +186,7 @@ const allocate = async (level) => {
 
     let attributes = await mod.Attribute.findOne();
     if (!attributes) throw new Error("Error fetching attributes");
-    attributes = unpackDoc(attributes);
+    // attributes = unpackDoc(attributes);
 
     // Loop for each choice
     for (let choice = 1; choice <= attributes.maxAppliedPrograms; choice++) {
@@ -191,7 +225,7 @@ const allocate = async (level) => {
             { programs: 1 }
           );
 
-          progDetails = unpackDoc(progDetails);
+          // progDetails = unpackDoc(progDetails);
 
           if (progDetails.allocatedCandidates < progDetails.maxCandidates) {
             const allocated = await mod.Application.updateOne(
@@ -217,7 +251,7 @@ const allocate = async (level) => {
               }
             );
 
-            if(!updatedProgDetails) return;
+            if (!updatedProgDetails) return;
           }
         });
       });
@@ -232,4 +266,5 @@ module.exports = {
   checkMandatorySubjects,
   validateUserCriteria,
   allocate,
+  validateResultOverProgram,
 };

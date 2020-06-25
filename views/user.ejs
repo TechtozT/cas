@@ -42,7 +42,15 @@
       rel="stylesheet"
     />
 
-    <link href="plugins/datatables-bs4/css/dataTables.bootstrap4.css" rel="stylesheet">
+    <link
+      href="plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="plugins/datatables-bs4/css/dataTables.bootstrap4.css"
+      rel="stylesheet"
+    />
 
     <link href="stylesheets/cas.css" rel="stylesheet" />
   </head>
@@ -186,7 +194,6 @@
                   <i class="nav-icon fas fa-gem"></i>
                   <p>
                     My Application
-                    
                   </p>
                 </router-link>
               </li>
@@ -276,7 +283,8 @@
               </div>
               <div class="modal-body">
                 <div class="alert alert-light-green">
-                  You are eligible to apply: <b>
+                  You are eligible to apply:
+                  <b>
                     Bachelor of science in computer science
                   </b>
                 </div>
@@ -286,7 +294,7 @@
                     Bachelor of science in computer science
                   </b>
                 </span> -->
-                <br>
+                <br />
                 <div class="form-group row">
                   <label class="col-3">Select Priority:</label>
                   <select class="custom-select col-3">
@@ -299,9 +307,10 @@
                 </div>
 
                 <p class="pt-1">
-                  <b class="color-light-red">NOTE:</b> You can change the application at any time before
-                  you finally submit it. To change the priority go to "My
-                  Application" and rearrange the programs by dragging them
+                  <b class="color-light-red">NOTE:</b> You can change the
+                  application at any time before you finally submit it. To
+                  change the priority go to "My Application" and rearrange the
+                  programs by dragging them
                 </p>
               </div>
               <div class="modal-footer">
@@ -319,11 +328,9 @@
             </div>
           </div>
         </div>
-
-
       </div>
       <!-- /.content-wrapper -->
-      <footer class="main-footer">
+      <footer class="main-footer swalDefaultError">
         <strong
           >Copyright &copy; 2014-2019
           <a href="http://adminlte.io">AdminLTE.io</a>.</strong
@@ -367,23 +374,26 @@
 
     <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
 
+    <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
+
     <script src="libs/axios.js"></script>
-   
+
     <!-- AdminLTE App -->
     <script src="dist/js/adminlte.js"></script>
     <!-- Load vue -->
     <script src="vue/vue.min.js"></script>
     <script src="vue/vue-router.js"></script>
-     <!-- sortable -->
-     <script src="plugins/sortablejs/sortable.min.js"></script>
-     <script src="plugins/sortablejs/sortable.vue.min.js"></script>
+    <!-- sortable -->
+    <script src="plugins/sortablejs/sortable.min.js"></script>
+    <script src="plugins/sortablejs/sortable.vue.min.js"></script>
 
-    <script src="js/cas.components.vue.js"></script>
+    
     <script src="js/cas.vue.js"></script>
     <script>
       $(function () {
         $('[data-toggle="tooltip"]').tooltip();
       });
     </script>
+    
   </body>
 </html>

@@ -94,10 +94,11 @@ const criteria = new Schema(
       gradPoint: { type: Number, required: true },
       // PCM, PGM, PCB, CBG, EGM, ...
       programs: [{ type: String, required: true }],
+      // minSubjects: {type: Number, required: true},
       mandatorySubs: [
         {
-          name: { type: String, unique: true },
-          grade: { type: Number },
+          name: { type: String, required: true },
+          grade: { type: String, required: true },
         },
       ],
       // c -> certificate, ...
@@ -184,7 +185,7 @@ const attribute = new Schema({
 const schoolResult = new Schema({
   indexNo: { type: String, required: true },
   level: { type: String, required: true, enum: ["o", "a"] },
-  yearEnrolled: { type: String, required: true },
+  enrolledYear: { type: String, required: true },
   center: { type: String, required: true },
   gradePoint: { type: Number, required: true },
   program: { type: String, required: true }, // combination: PCM, PCB, CBG, EGM ....

@@ -15,7 +15,7 @@ Vue.component("program", {
     <i v-else class="float-right far fa-check-circle color-light-green"
     data-toggle="tooltip" data-placement="top" title="Qualified"></i>
     <br>
-    <small class="text-muted">[Physics: B, Chemistry: B, Biology: B]</small>
+    <small class="text-muted">[Physics, Chemistry, Biology]</small>
     </td>
     
   </tr>
@@ -65,7 +65,7 @@ const programs = {
   },
 
   methods: {
-    loadPrograms: function(){
+    loadPrograms(){
       axios.get("/api/program")
       .then((res)=>{
         // hard coding 
@@ -86,6 +86,234 @@ const programs = {
     this.loadPrograms()
   }
 };
+
+
+Vue.component("inst", {
+  props: ["name", "id", "selected", "website", "qualified"],
+
+  template: 
+  `
+  <tr>
+    <td style="width:10px;" class="pt-4">
+      <div class="custom-control custom-checkbox">
+        <div v-if="qualified">
+          <input v-if="selected" class="custom-control-input" type="checkbox" :id="id" checked>
+          <input v-else class="custom-control-input" type="checkbox" :id="id">
+          <label :for="id" class="custom-control-label"></label>
+        </div>
+        <div @click="alertNotQualified" v-else >
+          <input class="custom-control-input" type="checkbox" :id="id" disabled>
+          <label :for="id" class="custom-control-label"></label>
+        </div>
+      </div>
+    </td>
+    <td><b>{{name}}</b>
+    <i v-if="qualified" class="float-right far fa-check-circle color-light-green"
+    data-toggle="tooltip" data-placement="top" title="Qualified"></i>
+    <i v-else class="float-right far fa-times-circle color-light-red"
+    data-toggle="tooltip" data-placement="top" title="Not qualified"></i>
+    <br>
+    <small class="text-muted">[ Physics: B, Chemistry: B, Biology: A ]</small>
+    </td>
+    
+  </tr>
+  `,
+
+  methods: {
+    alertNotQualified: function(){
+      console.log("clicked")
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: true,
+        timer: 7000,
+      });
+
+      Toast.fire({
+        type: "error",
+        title: "  You are not qualified to apply this program. not qualified to.",
+      });
+    }
+  }
+})
+
+
+// Single institutions.
+const institution = {
+
+  template: 
+  `<div class="institution">
+    <!-- {{ $route.params.id }} -->
+    <!-- <h3>University of Dar-es-salaam</h3> -->
+    <div class="card">
+      <h5 class="card-header alert-light-blue">
+      Select some Universities below of your choice for <b>{{$route.params.progName}}</b>.
+      </h5>
+      <div class="card-body">
+      <table class="table">
+      <!-- <thead>
+        <tr>
+          <th style="width: 10px"><h6><i class="fas fa-check"></i></h6></th>
+          <th><h5>Name</h5></th>
+          
+        </tr>
+      </thead> -->
+      <tbody v-if="institutions && institutions.length" class="table-elevate">
+        <inst v-for="inst in institutions"
+          v-bind:id = inst._id
+          v-bind:key = inst._id
+          v-bind:name = inst.name
+          v-bind:website = inst.website
+          v-bind:selected = inst.selected
+          v-bind:qualified = inst.qualified></inst>
+      </tbody>
+    </table>
+      </div>
+    </div>
+  </div>`,
+
+
+
+
+
+
+
+
+
+
+
+/* template: `
+
+
+<div class="card">
+<div class="card-header">
+  <h3 class="card-title">DataTable with default features</h3>
+</div>
+<!-- /.card-header -->
+<div class="card-body">
+  <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4">
+    <div class="row">
+      <div class="col-sm-12 col-md-6">
+        <div class="dataTables_length" id="example1_length">
+          <label
+            >Show
+            <select
+              name="example1_length"
+              aria-controls="example1"
+              class="custom-select custom-select-sm form-control form-control-sm"
+              ><option value="10">10</option
+              ><option value="25">25</option
+              ><option value="50">50</option
+              ><option value="100">100</option></select
+            >
+            entries</label
+          >
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div id="example1_filter" class="dataTables_filter">
+          <label
+            >Search:<input
+              type="search"
+              class="form-control form-control-sm"
+              placeholder=""
+              aria-controls="example1"
+          /></label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <table
+          id="example1"
+          class="table table-bordered dataTable"
+          role="grid"
+          aria-describedby="example1_info"
+        >
+          <thead>
+            <tr role="row">
+              <th
+                class="sorting"
+                tabindex="0"
+                aria-controls="example1"
+                rowspan="1"
+                colspan="1"
+                aria-label="Selection"
+              > Select
+              </th>
+
+              <th
+                class="sorting"
+                tabindex="0"
+                aria-controls="example1"
+                rowspan="1"
+                colspan="1"
+                aria-label="Program Name"
+              > University Name
+              </th>
+            </tr>
+          </thead>
+          <tbody v-if="institutions && institutions.length" class="table-elevate">
+            <inst v-for="inst in institutions"
+              v-bind:id = inst._id
+              v-bind:key = inst._id
+              v-bind:name = inst.name
+              v-bind:website = inst.website
+              v-bind:selected = inst.selected></inst>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.card-body -->
+</div>
+
+
+`,
+ */
+
+
+
+
+
+
+
+
+  data() {
+    return {
+      institutions: [],
+    }
+  },
+
+  methods: {
+    loadInstitutions: function(){
+      
+      axios.get("/api/institution", {
+        params: {
+          options: JSON.stringify({
+            "programs.program": this.$route.params.progId,
+          })
+        }
+      })
+      .then((res)=>{
+        
+        this.institutions = res.data;
+      
+      }).catch(function(err){
+        console.log(err)
+      })
+    },
+  },
+
+  created(){
+    this.loadInstitutions()
+  }
+
+};
+
+
 
 const Apply = {
 
@@ -227,208 +455,7 @@ const Apply = {
 };
 
 
-Vue.component("inst", {
-  props: ["name", "id", "selected", "website"],
 
-  template: 
-  `
-  <tr>
-    <td>
-    <div class="custom-control custom-checkbox">
-      <input v-if="selected" class="custom-control-input" type="checkbox" :id="id" checked>
-      <input v-else class="custom-control-input" type="checkbox" :id="id">
-      <label :for="id" class="custom-control-label"></label>
-    </div>
-    </td>
-    <td><b>{{name}}</b>
-    <i v-if="selected" class="float-right far fa-check-circle color-light-green"
-    data-toggle="tooltip" data-placement="top" title="Qualified"></i>
-    <br>
-    <small class="text-muted"> <a href="'website'"> {{website}} </a> </small>
-    </td>
-    
-  </tr>
-  `
-})
-
-
-// Single institutions.
-const institution = {
-
-  template: 
-  `<div class="institution">
-    <!-- {{ $route.params.id }} -->
-    <!-- <h3>University of Dar-es-salaam</h3> -->
-    <div class="card">
-      <h5 class="card-header alert-light-blue">
-      Select some Universities below of your choice for <b>{{$route.params.progName}}</b>.
-      </h5>
-      <div class="card-body">
-      <table class="table">
-      <!-- <thead>
-        <tr>
-          <th style="width: 10px"><h6><i class="fas fa-check"></i></h6></th>
-          <th><h5>Name</h5></th>
-          
-        </tr>
-      </thead> -->
-      <tbody v-if="institutions && institutions.length" class="table-elevate">
-        <inst v-for="inst in institutions"
-          v-bind:id = inst._id
-          v-bind:key = inst._id
-          v-bind:name = inst.name
-          v-bind:website = inst.website
-          v-bind:selected = inst.selected></inst>
-      </tbody>
-    </table>
-      </div>
-    </div>
-  </div>`,
-
-
-
-
-
-
-
-
-
-
-
-/* template: `
-
-
-<div class="card">
-<div class="card-header">
-  <h3 class="card-title">DataTable with default features</h3>
-</div>
-<!-- /.card-header -->
-<div class="card-body">
-  <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4">
-    <div class="row">
-      <div class="col-sm-12 col-md-6">
-        <div class="dataTables_length" id="example1_length">
-          <label
-            >Show
-            <select
-              name="example1_length"
-              aria-controls="example1"
-              class="custom-select custom-select-sm form-control form-control-sm"
-              ><option value="10">10</option
-              ><option value="25">25</option
-              ><option value="50">50</option
-              ><option value="100">100</option></select
-            >
-            entries</label
-          >
-        </div>
-      </div>
-      <div class="col-sm-12 col-md-6">
-        <div id="example1_filter" class="dataTables_filter">
-          <label
-            >Search:<input
-              type="search"
-              class="form-control form-control-sm"
-              placeholder=""
-              aria-controls="example1"
-          /></label>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12">
-        <table
-          id="example1"
-          class="table table-bordered dataTable"
-          role="grid"
-          aria-describedby="example1_info"
-        >
-          <thead>
-            <tr role="row">
-              <th
-                class="sorting"
-                tabindex="0"
-                aria-controls="example1"
-                rowspan="1"
-                colspan="1"
-                aria-label="Selection"
-              > Select
-              </th>
-
-              <th
-                class="sorting"
-                tabindex="0"
-                aria-controls="example1"
-                rowspan="1"
-                colspan="1"
-                aria-label="Program Name"
-              > University Name
-              </th>
-            </tr>
-          </thead>
-          <tbody v-if="institutions && institutions.length" class="table-elevate">
-            <inst v-for="inst in institutions"
-              v-bind:id = inst._id
-              v-bind:key = inst._id
-              v-bind:name = inst.name
-              v-bind:website = inst.website
-              v-bind:selected = inst.selected></inst>
-          </tbody>
-
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- /.card-body -->
-</div>
-
-
-`,
- */
-
-
-
-
-
-
-
-
-  data() {
-    return {
-      institutions: [],
-    }
-  },
-
-  methods: {
-    loadInstitutions: function(){
-      
-      axios.get("/api/institution", {
-        params: {
-          options: JSON.stringify({
-            "programs.program": this.$route.params.progId,
-          })
-        }
-      })
-      .then((res)=>{
-        // hard coding 
-        /* res.data.forEach(function (inst){
-          inst.selected = true;
-        }); */
-
-        this.institutions = res.data;
-      
-      }).catch(function(err){
-        console.log(err)
-      })
-    }
-  },
-
-  created(){
-    this.loadInstitutions()
-  }
-
-};
 
 const routes = [
   { path: "/application", component: Apply },
@@ -444,7 +471,7 @@ const vm = new Vue({
   el: "#app",
   router,
   data: {
-    
+
   },
 
   methods: {
