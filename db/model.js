@@ -207,6 +207,14 @@ const collegeResult = new Schema({
   program: { type: String, required: true },
 });
 
+const notification = new Schema({
+  type: { type: String, required: true },
+  title: { type: String, required: true },
+  body: { type: String, required: true },
+  //? Who to notify
+  subscribers: { type: ObjectId, required: true },
+});
+
 module.exports = {
   Applicant: mongoose.model("Applicant", applicant, "applicants"),
   Institution: mongoose.model("Institution", institution, "institutions"),
@@ -220,4 +228,5 @@ module.exports = {
     "collage_results"
   ),
   Program: mongoose.model("Program", program, "programs"),
+  Notification: mongoose.model("Notification", notification, "notification"),
 };
