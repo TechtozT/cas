@@ -91,7 +91,7 @@ const criteria = new Schema(
     school: {
       // a -> A-Level, o -> O-level.
       level: [{ type: String, required: true, enum: ["a", "o"] }],
-      gradPoint: { type: Number, required: true },
+      gradPoint: { type: Number, required: true, default: 0 },
       // PCM, PGM, PCB, CBG, EGM, ...
       programs: [{ type: String, required: true }],
       // minSubjects: {type: Number, required: true},

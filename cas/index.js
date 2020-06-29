@@ -157,7 +157,11 @@ const validateResultOverProgram = (stdResult, criteria) => {
     stdLevel = "college";
   }
 
-  if (criteria[stdLevel].gradePoint > stdResult.gradePoint) return false;
+  if (
+    criteria[stdLevel].gradePoint !== 0 &&
+    criteria[stdLevel].gradePoint > stdResult.gradePoint
+  )
+    return false;
 
   if (!criteria[stdLevel].programs.includes(stdResult.program)) return false;
 
