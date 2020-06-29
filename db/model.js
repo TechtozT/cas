@@ -212,7 +212,7 @@ const notification = new Schema({
   title: { type: String, required: true },
   body: { type: String, required: true },
   //? Who to notify
-  subscribers: { type: ObjectId, required: true },
+  subscribers: { type: ObjectID, required: true },
 });
 
 module.exports = {

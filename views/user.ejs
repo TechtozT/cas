@@ -37,10 +37,10 @@
     <!-- summernote -->
     <link rel="stylesheet" href="plugins/summernote/summernote-bs4.css" />
     <!-- Google Font: Source Sans Pro -->
-    <link
+    <!-- <link
       href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700"
       rel="stylesheet"
-    />
+    /> -->
 
     <link
       href="plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css"
@@ -328,17 +328,18 @@
             </div>
           </div>
         </div>
+
+
+        
+
       </div>
       <!-- /.content-wrapper -->
-      <footer class="main-footer swalDefaultError">
+      <footer class="main-footer">
         <strong
-          >Copyright &copy; 2014-2019
-          <a href="http://adminlte.io">AdminLTE.io</a>.</strong
+          >Copyright &copy; 2020
+          <a href="https://cas.ac.tz">cas.ac.tz</a>.</strong
         >
         All rights reserved.
-        <div class="float-right d-none d-sm-inline-block">
-          <b>Version</b> 3.0.2
-        </div>
       </footer>
     </div>
     <!-- ./wrapper -->
@@ -376,11 +377,14 @@
 
     <script src="plugins/sweetalert2/sweetalert2.min.js"></script>
 
+    <script src="plugins/serializeObject/jquery.serialize-object.min.js"></script>
+
     <script src="libs/axios.js"></script>
 
     <!-- AdminLTE App -->
     <script src="dist/js/adminlte.js"></script>
     <!-- Load vue -->
+    <script src="vue/vuex.js"></script>
     <script src="vue/vue.min.js"></script>
     <script src="vue/vue-router.js"></script>
     <!-- sortable -->
@@ -392,6 +396,13 @@
     <script>
       $(function () {
         $('[data-toggle="tooltip"]').tooltip();
+      });
+
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: true,
+        timer: 7000,
       });
     </script>
     
