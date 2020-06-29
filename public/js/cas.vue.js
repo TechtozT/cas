@@ -211,15 +211,23 @@ const institution = {
         });
 
         return;
-      } 
+      }
+      
+      const ins = [];
+
+      for (let x=0; x<selectedInst.institutions.length; x++){
+        let match = this.institutions.find(m => m._id === selectedInst.institutions[x]);
+        ins.push({
+          instID: match._id, 
+          instName: match.name
+        })
+      }
 
       this.addApplication({
         progID: this.$route.params.progId,
         progName: this.$route.params.progName,
-        institutions: selectedInst,
+        institutions: ins,
       })
-      // this.$root.$data.apps.push();
-
       
 
       router.push('/programs');
@@ -262,6 +270,10 @@ const Application = {
   methods: {
     applicationCounter(){
       return this.$store.state.application.length;
+    },
+
+    goToAppInst(progID){
+      router.push(`application/institutions/${progID}`)
     }
   },
 
@@ -278,17 +290,40 @@ const Application = {
       </div>
     </div> 
     
-    <div v-else class="card cursor-move">
-      <draggable v-model="application" :element="'ul'" 
-        group="application" @start="drag=true" @end="drag=false"
-        class="list-group list-group-flush">
-        <li class="list-group-item" v-for="item in application" :key="item.progID">
-          <i class="fas fa-thumbtack mr-2"></i>
-          {{item.progName}}
-        </li>
-      </draggable>
+    <div class="row" v-else>
+      <div class="col-12">
+        <button class="btn btn-info float-right d-block mb-2"> Submit your application </button>
+      </div>
+      <div class="col-12">
+        <div class="card cursor-move rounded-0">
+        <draggable
+        class="dragArea"
+        v-model="application"
+        :group="{ name: 'programs', pull: 'clone', put: false }">
+      
+          <div v-for="(section, i) in application">
+            <h5 class="card-header alert-light-blue mb-1 rounded-0"> {{section.progName}} </h5>
+            <draggable
+              class="dragArea"
+              :list="section.institutions"
+              :group="{ name: 'inst', pull: 'clone', put: false }">
+        
+              <li class="list-group-item rounded-0" v-for="item in section.institutions" 
+              :key="item.instID">
+                <i class="fas fa-thumbtack mr-2 color-red"></i>
+                {{item.instName}}
+              </li>
+            </draggable>
+        
+          </div>
+        </draggable>
+      </div>
+      </div>
     </div>
-  </div>`,
+  </div>
+  
+  `
+  ,
 };
 
 
