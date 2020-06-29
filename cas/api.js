@@ -1,6 +1,5 @@
 const mod = require("../db/model");
 const {
-  checkMandatorySubjects,
   validateResultOverProgram,
 } = require("./index");
 // const { unpackDoc } = require("../helpers/helper");

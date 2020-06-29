@@ -293,22 +293,72 @@ const Application = {
     }
   },
 
-  methods: {
-    applicationCounter(){
-      return this.$store.state.application.length;
-    },
+  created: {
+    // Check if user is already initiated the application
+    isInitApplication(){
+      console.log("initAppStatus()");
+      // if(initAppStatus()) return;
+
+      axios.get("/api/application")
+      .then(res=>{
+        if(res.data) {
+          // app appInitStatus to true
+          console.log(res.data)
+          this.$store.commit("initAppStatus");
+        }
+      }).catch(err=>{
+        console.log(err);
+      })
+    }
   },
 
+
+  methods: {
+    initAppStatus(){
+      console.log("init: ", this.$store.state.initAppStatus);
+      return this.$store.state.initAppStatus
+    },
+
+    // When Start new application
+    initApplication(){
+      axios.post("/api/application", {})
+      .then(res => {
+        if(res.data) {
+          Toast.fire({
+            type: "success",
+            title: "Successfully initiated your application, please proceed",
+          });
+
+          this.$store.commit("initAppStatus");
+          router.push('/programs');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },
+
+    saveApplication(){
+      const application = this.$store.state.application;
+      axios.put("/api/application", application)
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => {
+        console.log(err)
+      });
+    },
+  },
  
 
   template: 
   `
   <div>
-    <div v-if="applicationCounter() === 0">
+    <div v-if="!initAppStatus()">
       <div class="col-12 alert alert-light-red">You don't have any application yet, click 
       <b>"Start new application"</b> to apply now</div>
       <div class="row mb-5">
-        <button @click="$router.push('/programs')" class="btn btn-info mx-auto">Start new application</button>
+        <button @click="initApplication()" class="btn btn-info mx-auto">Start new application</button>
       </div>
     </div> 
     
@@ -356,6 +406,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     application: [],
+    initAppStatus: false,
   },
 
 
@@ -370,6 +421,10 @@ const store = new Vuex.Store({
 
     updateAppItem(state, payload){
       state.application[payload.index] = payload.item;
+    },
+
+    initAppStatus(state){
+      state.initAppStatus = true;
     }
   }
 })

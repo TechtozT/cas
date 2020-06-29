@@ -20,7 +20,13 @@ const models = {
   program: mod.Program,
 };
 
-const { create, get, remove, update } = require("../resolvers/index");
+const {
+  create,
+  get,
+  remove,
+  update,
+  initApplication,
+} = require("../resolvers/index");
 
 const checkAuth = (req, res, next) => {
   /* Check route first */
@@ -32,6 +38,22 @@ const checkAuth = (req, res, next) => {
 };
 
 router.post("/:entity", checkAuth, async (req, res) => {
+  //! Hard coded: Come from decoded jwt.
+  const user = "S1298.0245.2014";
+  const entity = req.params.entity;
+
+  let result;
+
+  if (entity === "application") {
+    const data = {
+      applicant: "5ef2895002c412580851f58e",
+      level: "b",
+    };
+
+    result = await initApplication(user, data);
+    return res.status(200).json(result);
+  }
+
   return res.json(create(models[entity], req.body));
 });
 

@@ -1,12 +1,12 @@
-const { unpackDoc } = require("../helpers/helper");
+const { initApplication } = require("./mixin");
 
 module.exports = {
   create: async (model, data) => {
-    const newEntity = new model(data);
+    let newEntity = new model(data);
     try {
       newEntity = await newEntity.save();
       if (!newEntity) throw new Error(`Failed to create, please try again`);
-      return unpackDoc(newEntity);
+      return newEntity;
     } catch (err) {
       throw err;
     }
@@ -16,10 +16,9 @@ module.exports = {
     if (!projection) projection = {};
     if (!options) options = {};
     // if(!population) population = {};
-    
+
     try {
-      if (typeof options === "string")
-      options = JSON.parse(options);
+      if (typeof options === "string") options = JSON.parse(options);
 
       let result;
       if (population) {
@@ -39,7 +38,7 @@ module.exports = {
     try {
       const result = await model.remove({ _id: { $in: ids } });
       if (!result) throw new Error("Failed to remove, please try again");
-      return unpackDoc(result);
+      return result;
     } catch (err) {
       throw err;
     }
@@ -50,9 +49,11 @@ module.exports = {
     try {
       const result = await model.updateMany({ _id: { $in: ids } }, update);
       if (!result) throw new Error("Failed to update, please again");
-      return unpackDoc(result);
+      return result;
     } catch (err) {
       throw err;
     }
   },
+
+  initApplication,
 };

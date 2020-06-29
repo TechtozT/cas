@@ -117,12 +117,15 @@ const criteria = new Schema(
 const application = new Schema({
   indexNo: { type: String, required: true },
   applicant: { type: ObjectID, required: true },
-  controlNumber: { type: String, required: true, unique: true },
-  paymentStatus: {
+  
+  // TODO Payments
+  /* controlNumber: { type: String, required: true, unique: true },
+
+   paymentStatus: {
     type: String,
     required: true,
     enum: ["p", "h", "n"],
-  },
+  }, */
   year: {
     type: Number,
     required: true,
