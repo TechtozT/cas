@@ -201,8 +201,19 @@ const institution = {
       this.$store.commit('addApplication', app);
     },
 
+    addProgSuccess(){
+      router.push('/programs');
+
+      Toast.fire({
+        type: "success",
+        title: "Successful, please select another program.",
+      });
+    },
+
     addInstitutions: function(){
       const selectedInst = $("#inst").serializeObject();
+      const progID = this.$route.params.progId;
+      
       
       if (!selectedInst.institutions || selectedInst.institutions.length === 0 ) {
         Toast.fire({
@@ -223,19 +234,34 @@ const institution = {
         })
       }
 
+      // Check if the selected program is already selected.
+      // If selected update the program
+      const storedInstApp = this.$store.state.application;
+      
+      const mayBeSelected = storedInstApp.findIndex(m => m.progID === progID);
+      if(mayBeSelected > -1) {
+        this.$store.commit('updateAppItem', 
+          {
+            item: {
+              progID: progID,
+              progName: this.$route.params.progName,
+              institutions: ins,
+            }, 
+            index: mayBeSelected
+          }
+        )
+        
+        return this.addProgSuccess();
+      }
+
       this.addApplication({
-        progID: this.$route.params.progId,
+        progID: progID,
         progName: this.$route.params.progName,
         institutions: ins,
       })
       
 
-      router.push('/programs');
-
-      Toast.fire({
-        type: "success",
-        title: "Successful, please select another program.",
-      });
+      this.addProgSuccess();
     },
 
   },
@@ -271,10 +297,6 @@ const Application = {
     applicationCounter(){
       return this.$store.state.application.length;
     },
-
-    goToAppInst(progID){
-      router.push(`application/institutions/${progID}`)
-    }
   },
 
  
@@ -344,6 +366,10 @@ const store = new Vuex.Store({
 
     updateApplication(state, updatedApplication){
       state.application = updatedApplication;
+    },
+
+    updateAppItem(state, payload){
+      state.application[payload.index] = payload.item;
     }
   }
 })
