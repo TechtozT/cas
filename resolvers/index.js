@@ -44,10 +44,10 @@ module.exports = {
     }
   },
 
-  update: async (model, ids, update) => {
+  update: async (model, match, update) => {
     // Updates is done by ID's
     try {
-      const result = await model.updateMany({ _id: { $in: ids } }, update);
+      const result = await model.updateMany(match, update);
       if (!result) throw new Error("Failed to update, please again");
       return result;
     } catch (err) {

@@ -3,11 +3,6 @@ const router = express.Router();
 
 const mod = require("../db/model");
 const auth = require("../auth/auth");
-/* const {
-  isQualifiedLevels,
-  checkMandatorySubjects,
-  validateUserCriteria,
-} = require("../cas/index"); */
 
 const { validateInstitutions } = require("../cas/api");
 
@@ -81,7 +76,28 @@ router.get("/:entity", checkAuth, async (req, res) => {
 });
 
 router.put("/:entity", checkAuth, async (req, res) => {
-  return res.json(update(models[entity], req.body.ids, req.body.update));
+  const user = "S1298.0245.2014";
+  let result;
+  const entity = req.params.entity;
+  if (entity === "application") {
+    const match = { indexNo: user };
+    const upd = { entry: [] };
+
+    const stdResult = await mod.SchoolResult.findOne({ indexNo: user });
+    if (stdResult === null) throw new Error("Error student not found");
+
+    for (let i = 0; i < req.body.length; i++) {
+      upd.entry.push({
+        program: req.body[i].progID,
+        progName: req.body[i].progName,
+        choice: i,
+        point: stdResult.gradePoint,
+        institutions: req.body[i].institutions,
+      });
+    }
+    result = await update(models[entity], match, upd);
+    return res.json(result);
+  }
 });
 
 router.delete("/:entity", checkAuth, async (req, res) => {

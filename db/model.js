@@ -136,11 +136,16 @@ const application = new Schema({
   entry: [
     {
       program: { type: ObjectID, required: true },
+      progName: {type: String, required: true},
       choice: { type: Number, required: true },
+      // point is the score that user score for particular program for particular criteria
+      // considering only mandatory subjects.
+      // But for now we use grade point
       point: { type: Number, required: true },
       institutions: [
         {
           inst: { type: ObjectID, required: true },
+          instName: {type: String, required: true},
           priority: { type: Number, required: true },
         },
       ],

@@ -175,7 +175,7 @@ const validateResultOverProgram = (stdResult, criteria) => {
     if (gradeDict.indexOf(s.grade) > gradeDict.indexOf(manSub.grade))
       return false;
   }
-
+  
   return true;
 };
 

@@ -234,6 +234,7 @@ const institution = {
         })
       }
 
+
       // Check if the selected program is already selected.
       // If selected update the program
       const storedInstApp = this.$store.state.application;
@@ -293,29 +294,43 @@ const Application = {
     }
   },
 
-  created: {
+  created() {
     // Check if user is already initiated the application
-    isInitApplication(){
-      console.log("initAppStatus()");
-      // if(initAppStatus()) return;
-
-      axios.get("/api/application")
-      .then(res=>{
-        if(res.data) {
-          // app appInitStatus to true
-          console.log(res.data)
-          this.$store.commit("initAppStatus");
-        }
-      }).catch(err=>{
-        console.log(err);
-      })
+    if(!this.$store.state.initAppStatus){
+      this.isInitApplication()
     }
+    
   },
 
 
   methods: {
+
+    isInitApplication(){
+
+      axios.get("/api/application")
+      .then(res=>{
+        if(res.data.length > 0 && res.data[0].entry.length > 0) {
+          const application = res.data[0].entry;
+          const app = [];
+          for(let i = 0; i < application.length; i++){
+            app.push({
+              progID: application[i].program,
+              progName: application[i].progName,
+              institutions: application[i].institutions,
+            });
+          }
+          this.$store.commit("updateApplication", app);
+
+          // app appInitStatus to true
+          this.$store.commit("initAppStatus");
+        }
+        // console.log(this.$store.state.application)
+      }).catch(err =>{
+        console.log(err);
+      })
+    },
+
     initAppStatus(){
-      console.log("init: ", this.$store.state.initAppStatus);
       return this.$store.state.initAppStatus
     },
 
@@ -342,10 +357,18 @@ const Application = {
       const application = this.$store.state.application;
       axios.put("/api/application", application)
       .then(res => {
-        console.log(res)
+        if(res.data.ok === 1){
+          Toast.fire({
+            type: "success",
+            title: "You application wa saved successfully",
+          });
+        }
       })
       .catch(err => {
-        console.log(err)
+        Toast.fire({
+          type: "error",
+          title: err.toString(),
+        });
       });
     },
   },
@@ -364,17 +387,19 @@ const Application = {
     
     <div class="row" v-else>
       <div class="col-12">
-        <button class="btn btn-info float-right d-block mb-2"> Submit your application </button>
+        <button v-if="this.$store.state.application.length > 0" 
+        class="btn btn-info float-right d-block mb-2"
+        @click="saveApplication()"> Save application </button>
       </div>
       <div class="col-12">
-        <div class="card cursor-move rounded-0">
+        <div class="">
         <draggable
         class="dragArea"
         v-model="application"
         :group="{ name: 'programs', pull: 'clone', put: false }">
       
-          <div v-for="(section, i) in application">
-            <h5 class="card-header alert-light-blue mb-1 rounded-0"> {{section.progName}} </h5>
+          <div class="mb-3 card cursor-move rounded-0" v-for="(section, i) in application">
+            <h5 class="card-header alert-light-blue rounded-0"> {{section.progName}} </h5>
             <draggable
               class="dragArea"
               :list="section.institutions"
@@ -382,7 +407,7 @@ const Application = {
         
               <li class="list-group-item rounded-0" v-for="item in section.institutions" 
               :key="item.instID">
-                <i class="fas fa-thumbtack mr-2 color-red"></i>
+                <i class="fas fa-thumbtack mr-2 color-orange"></i>
                 {{item.instName}}
               </li>
             </draggable>
