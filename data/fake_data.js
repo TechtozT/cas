@@ -266,7 +266,7 @@ const addInst = async () => {
         program: progs[j]._id,
 
         // Can choose the available standard criteria (i.e TCU) or create new one.
-        criteria: "5ef513c7cab0c0339d4bfe70",
+        criteria: "5f063031a794bd1197988968",
 
         // max accommodation of the students in this program
         maxCandidates: Math.floor(Math.random() * 100),
@@ -342,7 +342,7 @@ const addSchoolResults = async () => {
   // console.log(result);
 
   const schoolResult = new mod.SchoolResult({
-    indexNo: "S1298.0247.2014",
+    indexNo: "S1298.0245.2014",
     level: "a",
     enrolledYear: 2014,
     center: "S1298",
@@ -384,7 +384,7 @@ const addCriteria = async () => {
 
         {
           name: "Chemistry",
-          grade: "B",
+          grade: "A",
         },
       ],
       // c -> certificate, ...
@@ -426,7 +426,7 @@ const addApplicant = async () => {
 // Has some problem.
 // addSchoolResults();
 
-// addInst();
+addInst();
 
 // addProgs();
 

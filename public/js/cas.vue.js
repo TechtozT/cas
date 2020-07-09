@@ -164,7 +164,7 @@ const institution = {
       </div>
     </div>
     <button @click="addInstitutions()" 
-      class="btn btn-info floating_btn rounded-circle"
+      class="btn btn-info floating_btn floating_btn_add_prog rounded-circle"
       data-toggle="tooltip" data-placement="top" title="Add to your application"
       > <i class="fas fa-plus"></i>
     </button>
@@ -360,7 +360,7 @@ const Application = {
         if(res.data.ok === 1){
           Toast.fire({
             type: "success",
-            title: "You application wa saved successfully",
+            title: "Your application wa saved successfully",
           });
         }
       })
@@ -386,12 +386,12 @@ const Application = {
     </div> 
     
     <div class="row" v-else>
+      
       <div class="col-12">
-        <button v-if="this.$store.state.application.length > 0" 
-        class="btn btn-info float-right d-block mb-2"
-        @click="saveApplication()"> Save application </button>
-      </div>
-      <div class="col-12">
+      <button v-if="this.$store.state.application.length > 0" 
+      class="btn btn-info mb-2"
+      @click="saveApplication()"> <i class="fas fa-save"></i> Save </button>
+
         <div class="">
         <draggable
         class="dragArea"
@@ -416,6 +416,9 @@ const Application = {
         </draggable>
       </div>
       </div>
+      
+        
+      
     </div>
   </div>
   

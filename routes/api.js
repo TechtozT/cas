@@ -28,7 +28,7 @@ const checkAuth = (req, res, next) => {
   const entity = req.params.entity;
   if (!models[entity]) return res.sendStatus(404);
   /* Check if authorized to this route */
-  // if (!auth.isAuth(req.headers.authorization)) return res.status(403).json({ auth: false });
+  // if (!auth.isAuth(req.headers.authorization)) return res.status(401).json({ auth: false });
   next();
 };
 
