@@ -11,13 +11,6 @@ Vue.component("program", {
     <b> {{ name }}
     </b> <i v-if="selected" class = "fas fa-check color-light-green float-right" 
     data-toggle="tooltip" data-placement="top" title="You selected this program"></i>
-    
-    <!-- <i v-if="!qualified" class="float-right far fa-times-circle color-red"
-    data-toggle="tooltip" data-placement="top" title="Not qualified"></i>
-    <i v-else class="float-right far fa-check-circle color-light-green"
-    data-toggle="tooltip" data-placement="top" title="Qualified"></i> -->
-    <br>
-    <small class="text-muted">[Physics, Chemistry, Biology]</small>
     </td>
     
   </tr>
@@ -51,7 +44,6 @@ const programs = {
         v-bind:index = "index"
         v-bind:name = "prog.name"
         v-bind:selected = "prog.selected"
-        
         ></program>
       </tbody>
     </table>
@@ -99,7 +91,7 @@ Vue.component("inst", {
   template: 
   `
   <tr>
-    <td style="width:10px;" class="pt-4">
+    <td style="width:10px;">
       <div class="custom-control custom-checkbox">
         <div v-if="qualified">
           <input v-if="selected" class="custom-control-input" type="checkbox" 
@@ -118,8 +110,6 @@ Vue.component("inst", {
     data-toggle="tooltip" data-placement="top" title="Qualified"></i>
     <i v-else class="float-right far fa-times-circle color-light-red"
     data-toggle="tooltip" data-placement="top" title="Not qualified"></i>
-    <br>
-    <small class="text-muted">[ Physics: B, Chemistry: B, Biology: A ]</small>
     </td>
     
   </tr>
