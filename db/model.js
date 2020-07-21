@@ -38,6 +38,21 @@ const applicant = new Schema(
   { timestamps: true }
 );
 
+const admin = new Schema(
+  {
+    firstName: { type: String, required: true },
+    middleName: { type: String },
+    lastName: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phoneNumber: { type: String, required: true, unique: true },
+
+    gender: { type: String, required: true },
+    role: { type: String, enum: ["admin", "super"], required: true },
+    institution: { type: ObjectID, required: true, ref: "Institution", unique: true },
+  },
+  { timestamps: true }
+);
+
 const program = new Schema({
   name: { type: String, required: true },
   level: { type: String, required: true },
@@ -45,6 +60,7 @@ const program = new Schema({
 
 const institution = new Schema(
   {
+    // admins: [{ type: ObjectID, required: true, ref: "Admin", unique: true }],
     // Programs -> criteria -> mandatory-sub, coll-level, high-school-level
     name: { type: String, required: true },
 
@@ -88,6 +104,8 @@ const institution = new Schema(
 
 const criteria = new Schema(
   {
+    name: { type: String, required: true },
+    institution: { type: ObjectID, required: true, ref: "Institution" },
     school: {
       // a -> A-Level, o -> O-level.
       level: [{ type: String, required: true, enum: ["a", "o"] }],
@@ -117,7 +135,7 @@ const criteria = new Schema(
 const application = new Schema({
   indexNo: { type: String, required: true },
   applicant: { type: ObjectID, required: true },
-  
+
   // TODO Payments
   /* controlNumber: { type: String, required: true, unique: true },
 
@@ -136,7 +154,7 @@ const application = new Schema({
   entry: [
     {
       program: { type: ObjectID, required: true },
-      progName: {type: String, required: true},
+      progName: { type: String, required: true },
       choice: { type: Number, required: true },
       // point is the score that user score for particular program for particular criteria
       // considering only mandatory subjects.
@@ -145,7 +163,7 @@ const application = new Schema({
       institutions: [
         {
           inst: { type: ObjectID, required: true },
-          instName: {type: String, required: true},
+          instName: { type: String, required: true },
           priority: { type: Number, required: true },
         },
       ],
@@ -237,4 +255,5 @@ module.exports = {
   ),
   Program: mongoose.model("Program", program, "programs"),
   Notification: mongoose.model("Notification", notification, "notification"),
+  Admin: mongoose.model("Admin", admin, "admins"),
 };
