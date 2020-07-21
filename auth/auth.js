@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const { Applicant, SchoolResult, CollegeResult } = require("../db/model");
 const { config, urls } = require("../env");
-const { unpackDoc } = require("../helpers/helper");
+// const { unpackDoc } = require("../helpers/helper");
 
 const jwtOptions = {
   expiresIn: 86400,
@@ -46,11 +46,11 @@ module.exports = {
       );
 
       return {
-        user: unpackDoc(newUser),
+        user: newUser,
         userToken: userToken,
       };
     } catch (err) {
-      throw err;
+      console.log(err);
     }
   },
 
