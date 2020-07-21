@@ -74,7 +74,122 @@ Vue.component("application", {
 
 Vue.component("application-details", {});
 
-// Vue.component("new-application", {});
+
+
+
+Vue.component("new-criteria-modal", {
+  template:
+  `
+    <div
+    class="modal fade"
+    id="newCriteriaModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="newCriteriaModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newCriteriaModalTitle">
+            Create new criteria
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="newCriteria">
+            
+            <div class="form-group">
+              <label>Program name</label>
+              <select name="program" class="form-control select2bs4" style="width: 100%;">
+                <option value="_id" selected="selected">Bachelor of Arts</option>
+                <option value="_id">Bachelor Science in Computer Science</option>
+                <option value="_id">Bachelor of Science in Computer Engineering</option>
+                <option value="_id">Bachelor of Science in Telecommunications</option>
+              </select>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Maximum allocation</label>
+                  <input value="0" name="maxCandidates" class="form-control" type="number">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Males/Female ratio (%)</label>
+                  <input value="0" name="malesToFemalesRatio" class="form-control" type="number">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Program criteria</label>
+              <select name="criteria" class="form-control select2bs4" style="width: 100%;">
+                <option value="_id" selected="selected">Default TCU criteria</option>
+                <option value="_id">Criteria 001</option>
+                <option value="_id">Criteria for IT</option>
+              </select>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>A-level/Diploma (%)</label>
+                  <input value="0" name="aLevelToDiplomaRatio" class="form-control" type="number">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>A-Level/Diploma Factor (%)</label>
+                  <input value="0" name="aLevelToDiplomaFactor" class="form-control" type="number">
+                </div>
+              </div>
+            </div>
+
+
+              
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          <button @click="submitCriteria()" type="button" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  `,
+
+  methods: {
+    submitCriteria(){
+      const crit = $("#newCriteria").serializeObject();
+      // push the criteria to the state.
+      this.$store.commit("saveEntity", {
+        entity: "criteria",
+        obj: crit,
+      })
+      // submit the form.
+      console.log(crit);
+    }
+  }
+});
+
+
 
 
 // Views
