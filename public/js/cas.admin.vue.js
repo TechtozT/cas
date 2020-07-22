@@ -38,11 +38,8 @@ const store = new Vuex.Store({
 // *Details should not have different route, just call modal and deserialize the form.
 const routes = [
   { path: "/applications", component: casApplications },
-  // { path: "/application/:id", component: casApplicationDetails },
   { path: "/criteria", component: casCriteria },
-  // { path: "/criteria/:id", component: casCriteriaDetails },
   { path: "/programs", component: casPrograms },
-  // { path: "/program/:id", component: casProgramDetails },
 ];
 
 const router = new VueRouter({
@@ -54,7 +51,9 @@ const vm = new Vue({
   router,
   store,
 
-  data: {},
+  data: {
+    isSuper: true,
+  },
 
   methods: {
     /**
