@@ -22,11 +22,17 @@ const store = new Vuex.Store({
     saveEntity(state, payload) {
       const o = payload.obj;
       const index = state[payload.entity].findIndex((obj) => obj._id === o._id);
-      if (index < 0) {  // o is a new object.
+      if (index < 0) {
+        // o is a new object.
         state[payload.entity][index] = o;
-      } else{ // o is being updated.
+      } else {
+        // o is being updated.
         state[payload.entity].push(o);
       }
+    },
+
+    loadPrograms(state, progs) {
+      this.state.progs = progs;
     },
   },
 
@@ -52,7 +58,7 @@ const vm = new Vue({
   store,
 
   data: {
-    isSuper: true,
+    role: role,
   },
 
   methods: {
@@ -65,6 +71,25 @@ const vm = new Vue({
     findObject(arr, filterKey, filterValue) {
       let index = arr.findIndex((obj) => obj[filterKey] === filterValue);
       return index;
+    },
+
+    isSuper() {
+      if (role === "super") {
+        return true;
+      }
+
+      return false;
+    },
+
+    loadPrograms() {
+      axios
+        .get("/api/program")
+        .then((res) => {
+          store.commit("loadPrograms", res.data);
+        })
+        .catch(function (err) {
+          console.log("Error: ", err);
+        });
     },
   },
 });

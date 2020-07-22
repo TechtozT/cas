@@ -6,7 +6,6 @@ const { Admin, Applicant } = require("../db/model");
 const { register, registerA, login, loginA } = require("../auth/auth");
 
 router.post("/login", async (req, res) => {
-  console.log(req.headers["cookie"])
   const info = req.body;
   let user;
   let token;

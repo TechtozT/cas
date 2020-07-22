@@ -16,7 +16,7 @@ router.get("/user", (req, res) => {
 
 /* GET admin page */
 router.get("/admin", authA, (req, res) => {
-  res.render("admin", { name: "Admin Page" });
+  res.render("admin", { name: "CAS Admin",  role: req.role, email: req.email});
 });
 
 module.exports = router;

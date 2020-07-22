@@ -421,14 +421,15 @@ const addApplicant = async () => {
 
 const addAdmin = async()=>{
   let admin = new mod.Admin({
-    firstName: "Andy",
-    middleName: "A",
-    lastName: "Mwamengo",
-    email: "a@gmail.com",
-    phoneNumber: "0783276578",
+    firstName: "Sadru",
+    middleName: "Mkude",
+    lastName: "Msumi",
+    email: "s@gmail.com",
+    phoneNumber: "0783276577",
     password: bcrypt.hashSync("12345", 11),
     gender: "M",
-    role: "super",
+    instituton: "5f062e9198a18e0f54bdb8c0",
+    role: "admin",
   });
   try{
     admin = await admin.save();

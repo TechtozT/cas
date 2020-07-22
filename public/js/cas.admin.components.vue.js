@@ -77,7 +77,8 @@ Vue.component("application-details", {});
 
 
 
-Vue.component("new-criteria-modal", {
+Vue.component("new-program-modal", {
+  props: ["progs"],
   template:
   `
     <div
@@ -92,7 +93,7 @@ Vue.component("new-criteria-modal", {
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="newCriteriaModalTitle">
-            Create new criteria
+            Create new Program
           </h5>
           <button
             type="button"
@@ -109,10 +110,7 @@ Vue.component("new-criteria-modal", {
             <div class="form-group">
               <label>Program name</label>
               <select name="program" class="form-control select2bs4" style="width: 100%;">
-                <option value="_id" selected="selected">Bachelor of Arts</option>
-                <option value="_id">Bachelor Science in Computer Science</option>
-                <option value="_id">Bachelor of Science in Computer Engineering</option>
-                <option value="_id">Bachelor of Science in Telecommunications</option>
+                <option v-for ="prog in progs" :value = "prog._id" selected="selected">{{ prog.name }}</option>
               </select>
             </div>
 
@@ -175,6 +173,13 @@ Vue.component("new-criteria-modal", {
 
   `,
 
+
+  created() {
+    // Fetch all programs
+    if (this.$store.state['progs'].length <= 0){
+      this.$parent.loadPrograms()
+    }
+  },
   methods: {
     submitCriteria(){
       const crit = $("#newCriteria").serializeObject();

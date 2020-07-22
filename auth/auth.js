@@ -146,10 +146,11 @@ module.exports = {
     if (!token) return res.json({ msg: "You are not authorized" });
     try {
       const decodedToken = decodeToken(token);
-      console.log(decodedToken);
       if (decodedToken.role === "super" || decodedToken.role === "admin") {
         req.decodedToken = decodedToken;
-        next();
+        req.role = decodedToken.role;
+        req.email = decodedToken.email;
+        return next();
       }
       return res.json({ auth: false, message: "You are not authorized" });
     } catch (err) {

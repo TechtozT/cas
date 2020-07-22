@@ -62,14 +62,14 @@ const programs = {
       axios.get("/api/program")
       .then((res)=>{
         //! hard coding 
-        res.data.forEach(function (pro, index){
+        /* res.data.forEach(function (pro, index){
           if(index % 2 === 0){
             pro.selected = false;
           } else{
             pro.selected = true;
           }
           // pro.qualified = true;
-        });
+        }); */
 
         this.progs = res.data;
       
