@@ -64,6 +64,14 @@
               <span> New </span>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+              <a v-if="isSuper" href="#" class="dropdown-item">
+                <i class="fas fa-school mr-2"></i> Institution
+              </a>
+              <div class="dropdown-divider"></div>
+              <a v-if="isSuper" href="#" class="dropdown-item">
+                <i class="fas fa-user mr-2"></i> User
+              </a>
+              <div class="dropdown-divider"></div>
               <a href="#" class="dropdown-item" data-toggle="modal"
               data-target="#newCriteriaModal">
                 <i class="fas fa-filter mr-2"></i> Criteria
@@ -75,6 +83,10 @@
               <div class="dropdown-divider"></div>
               <a href="#" class="dropdown-item">
                 <i class="fas fa-gem mr-2"></i> Application
+              </a>
+              <div class="dropdown-divider"></div>
+              <a v-if="isSuper" href="#" class="dropdown-item">
+                <i class="fas fa-asterisk mr-2"></i> Attribute
               </a>
             </div>
           </li>
@@ -170,76 +182,76 @@
                 </router-link>
               </li>
 
-              <li class="nav-item has-treeview">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-filter"></i>
+              <li v-if="isSuper" class="nav-item">
+                <router-link
+                  to="/institutions"
+                  class="nav-link"
+                >
+                  <i class="nav-icon fas fa-school"></i>
+                  <p>
+                    Institutions
+                  </p>
+                </router-link>
+              </li>
+
+              <li class="nav-item">
+                <router-link
+                  to="/criteria"
+                  class="nav-link"
+                >
+                <i class="nav-icon fas fa-filter"></i>
                   <p>
                     Criteria
-                    <i class="right fas fa-angle-left"></i>
                   </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <router-link to="new-criteria" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>New Criteria</p>
-                    </router-link>
-                  </li>
-                  <li class="nav-item">
-                    <router-link to="/criteria" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>All Criteria</p>
-                    </router-link>
-                  </li>
-                </ul>
+                </router-link>
               </li>
 
-              <li class="nav-item has-treeview">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon fas fa-cubes"></i>
+              <li class="nav-item">
+                <router-link
+                  to="/programs"
+                  class="nav-link"
+                >
+                <i class="nav-icon fas fa-cubes"></i>
                   <p>
                     Programs
-                    <i class="right fas fa-angle-left"></i>
                   </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <router-link to="/new-program" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>New Program</p>
-                    </router-link>
-                  </li>
-                  <li class="nav-item">
-                    <router-link to="/programs" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>All Programs</p>
-                    </router-link>
-                  </li>
-                </ul>
+                </router-link>
               </li>
 
-              <li class="nav-item has-treeview">
-                <a href="#" class="nav-link">
-                  <i class="nav-icon far fa-gem"></i>
+              <li class="nav-item">
+                <router-link
+                  to="/applications"
+                  class="nav-link"
+                >
+                  <i class="nav-icon fas fa-gem"></i>
                   <p>
                     Applications
-                    <i class="fas fa-angle-left right"></i>
                   </p>
-                </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
-                    <router-link to="new-application" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>New Application</p>
-                    </router-link>
-                  </li>
-                  <li class="nav-item">
-                    <router-link to="/applications" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>All Applications</p>
-                    </router-link>
-                  </li>
-                </ul>
+                </router-link>
+              </li>
+
+              <li v-if="isSuper" class="nav-item">
+                <router-link
+                  to="/users"
+                  class="nav-link"
+                >
+                  <i class="nav-icon fas fa-users"></i>
+                  <p>
+                    Users
+                  </p>
+                </router-link>
+              </li>
+
+              <li v-if="isSuper" class="nav-item">
+                <router-link
+                  to="/attributes"
+                  class="nav-link"
+                >
+                  <i class="nav-icon fas fa-asterisk"></i>
+                  <p>
+                    Attributes
+                  </p>
+                </router-link>
               </li>
             </ul>
           </nav>
