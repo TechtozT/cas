@@ -6,7 +6,8 @@ const logger = require("morgan");
 
 const indexRouter = require("./routes/index");
 const apiRouter = require("./routes/api");
-const adminRouter = require("./routes/admin");
+const adminRouter = require("./routes/admin").router;
+const authRouter = require("./routes/auth");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
+app.use("/auth", authRouter);
 app.use("/api", apiRouter);
 app.use("/admin", adminRouter);
 
