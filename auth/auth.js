@@ -93,4 +93,68 @@ module.exports = {
       return decToken;
     });
   },
+
+  // returns token
+  registerA: async (user) => {
+    try {
+      let result = await Admin.findOne({ email: user.email }, { _id: 1 });
+      if (result) throw new Error("User already exist");
+      admin.password = bcrypt.hashSync(admin.password, 11);
+      const admin = new Admin(user);
+      result = await admin.save();
+      if (!result) throw new Error("Failed to create new user");
+
+      const adminToken = jwt.sign(
+        { id: result._id, email: result.email, role: result.role },
+        config.SECRET,
+        jwtOptions
+      );
+
+      return adminToken;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  // returns token
+  loginA: async (user, info) => {
+    try {
+      if (!bcrypt.compareSync(info.password, user.password)) {
+        throw new Error("Password mismatch");
+      }
+
+      const adminToken = jwt.sign(
+        { id: user._id, email: user.email, role: user.role },
+        config.SECRET,
+        jwtOptions
+      );
+
+      return adminToken;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  decodeToken: (token) => {
+    return jwt.verify(token, config.SECRET, jwtOptions);
+  },
+
+  authA: (req, res, next) => {
+    if (!req.headers.authorization)
+      return res.json({ msg: "You are not authorized" });
+    try {
+      const decodedToken = decodeToken(req.headers.authorization);
+      if (
+        !decodedToken ||
+        decodedToken.role !== "super" ||
+        decodedToken.role !== "admin"
+      ) {
+        return res.json({ auth: false, message: "You are not authorized" });
+      }
+      next();
+    } catch (err) {
+      console.log("Error authentication");
+      return res.json(err);
+    }
+  },
 };
