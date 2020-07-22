@@ -10,6 +10,10 @@ const jwtOptions = {
   issuer: urls.BASE_URL,
 };
 
+const decodeToken = (token) => {
+  return jwt.verify(token, config.SECRET, jwtOptions);
+};
+
 module.exports = {
   /**
    * @param entryLevel : The level that the user intends to apply ["school", "college"].
@@ -117,7 +121,7 @@ module.exports = {
   },
 
   // returns token
-  loginA: async (user, info) => {
+  loginA: (user, info) => {
     try {
       if (!bcrypt.compareSync(info.password, user.password)) {
         throw new Error("Password mismatch");
@@ -135,26 +139,20 @@ module.exports = {
     }
   },
 
-  decodeToken: (token) => {
-    return jwt.verify(token, config.SECRET, jwtOptions);
-  },
-
   authA: (req, res, next) => {
-    if (!req.headers.authorization)
-      return res.json({ msg: "You are not authorized" });
+    const token = req.headers["cookie"].split(" ")[1];
+    if (!token) return res.json({ msg: "You are not authorized" });
     try {
-      const decodedToken = decodeToken(req.headers.authorization);
-      if (
-        !decodedToken ||
-        decodedToken.role !== "super" ||
-        decodedToken.role !== "admin"
-      ) {
-        return res.json({ auth: false, message: "You are not authorized" });
+      const decodedToken = decodeToken(token);
+      console.log(decodedToken)
+      if (decodedToken.role === "super" || decodedToken.role === "admin") {
+        req.decodedToken = decodedToken;
+        next();
       }
-      next();
+      return res.json({ auth: false, message: "You are not authorized" });
     } catch (err) {
-      console.log("Error authentication");
-      return res.json(err);
+      console.log(err);
+      return res.end();
     }
   },
 };

@@ -1,5 +1,6 @@
 const express = require("express");
-const router = express.router();
+const router = express.Router();
+// const jwt = require("jsonwebtoken");
 
 const { Admin, Applicant } = require("../db/model");
 const { register, registerA, login, loginA } = require("../auth/auth");
@@ -20,15 +21,11 @@ router.post("/login", async (req, res) => {
     if (!user) throw new Error("User not found");
 
     const token = loginA(user, info);
-    req.headers.authorization = token;
-
-    if (role === "admin" || role == "super") {
-      return res.redirect("/admin");
-    } else {
-      res.redirect("/user");
-    }
+    return res.json({auth: true, token: token});
   } catch (err) {
     console.log(err);
     return res.json(err);
   }
 });
+
+module.exports = router;

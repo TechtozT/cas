@@ -45,10 +45,10 @@ const admin = new Schema(
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: true, unique: true },
-
-    gender: { type: String, required: true },
+    password: { type: String, required: true },
+    gender: { type: String, required: true, enum: ["M", "F"] },
     role: { type: String, enum: ["admin", "super"], required: true },
-    institution: { type: ObjectID, required: true, ref: "Institution", unique: true },
+    institution: { type: ObjectID, ref: "Institution" },
   },
   { timestamps: true }
 );

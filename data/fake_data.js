@@ -5,6 +5,7 @@ const mod = require("../db/model");
 const faker = require("faker");
 const { unpackDoc } = require("../helpers/helper");
 const { fake } = require("faker");
+const bcrypt = require("bcryptjs");
 
 const fakeData = [];
 
@@ -418,7 +419,28 @@ const addApplicant = async () => {
   console.log(results);
 };
 
+const addAdmin = async()=>{
+  let admin = new mod.Admin({
+    firstName: "Andy",
+    middleName: "A",
+    lastName: "Mwamengo",
+    email: "a@gmail.com",
+    phoneNumber: "0783276578",
+    password: bcrypt.hashSync("12345", 11),
+    gender: "M",
+    role: "super",
+  });
+  try{
+    admin = await admin.save();
+  } catch(err){
+    console.log(err);
+  }
 
+  console.log(admin);
+
+}
+
+// addAdmin();
 // addApplicant();
 
 // addCriteria();
@@ -426,10 +448,11 @@ const addApplicant = async () => {
 // Has some problem.
 // addSchoolResults();
 
-addInst();
+// addInst();
 
 // addProgs();
 
 // update();
 
 // load(fakeData);
+

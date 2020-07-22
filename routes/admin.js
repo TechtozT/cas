@@ -1,6 +1,6 @@
 const express = require("express");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+
+const router = express.Router();
 
 const {
   SchoolResult,
@@ -11,74 +11,22 @@ const {
   Institution,
   Attribute,
 } = require("../db/model");
-const { config, urls } = require("../env");
-const { token } = require("morgan");
 
-const jwtOptions = {
-  expiresIn: 86400,
-  issuer: urls.BASE_URL,
-};
+const { authA } = require("../auth/auth");
 
-// returns token
-const register = async (user) => {
-  try {
-    let result = await Admin.findOne({ email: user.email }, { _id: 1 });
-    if (result) throw new Error("User already exist");
-    admin.password = bcrypt.hashSync(admin.password, 11);
-    const admin = new Admin(user);
-    result = await admin.save();
-    if (!result) throw new Error("Failed to create new user");
-
-    const adminToken = jwt.sign(
-      { id: result._id, email: result.email, role: result.role },
-      config.SECRET,
-      jwtOptions
-    );
-
-    return adminToken;
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-// returns token
-const login = async (info) => {
-  try {
-    const user = await Admin.findOne({ _id: info.id });
-    if (!user) throw new Error("User not found");
-
-    if (!bcrypt.compareSync(info.password, user.password)) {
-      throw new Error("Password mismatch");
-    }
-
-    const adminToken = jwt.sign(
-      { id: result._id, email: result.email, role: result.role },
-      config.SECRET,
-      jwtOptions
-    );
-
-    return adminToken;
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const decodeToken = (token) => {
-  return jwt.verify(token, config.SECRET, jwtOptions);
-};
-
-const router = express.Router();
+// Check authentication for all admin routes
+router.get("/*", authA);
 
 router.get("/criteria", async (req, res) => {
   try {
     let criteria;
-    const token = decodeToken(req.headers.authentication);
-    if(token.role === "super"){
+    const token = req.decodeToken;
+    if (token.role === "super") {
+      // Can get all criteria
       criteria = await Criteria.find();
       return res.json(criteria);
     }
 
-    if (!token) return res.status(401).json({ auth: false });
     const user = await Admin.findOne({ _id: token.id }, { institution: 1 });
     criteria = await Criteria.find({ institution: user.institution });
 
@@ -142,21 +90,24 @@ router.put("/criteria", async (req, res) => {
   }
 });
 
-router.delete("/criteria", async(req, res)=>{
+router.delete("/criteria", async (req, res) => {
   const token = decodeToken(req.headers.authentication);
   if (!token || token.role !== "admin" || token.role !== "super") {
     return res.status(401).json({ auth: false });
   }
 
   let result;
-  if(token.role === "super"){
-    result = await Criteria.deleteOne({_id: req.body._id});
+  if (token.role === "super") {
+    result = await Criteria.deleteOne({ _id: req.body._id });
     return res.json(result);
   }
 
   const user = Admin.findById(token.id, { institution: 1 });
-  result = await Criteria.deleteOne({_id: req.body._id, institution: user.institution});
+  result = await Criteria.deleteOne({
+    _id: req.body._id,
+    institution: user.institution,
+  });
   return res.json(result);
-})
+});
 
 module.exports = router;

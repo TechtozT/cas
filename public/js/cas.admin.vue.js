@@ -35,7 +35,7 @@ const store = new Vuex.Store({
 });
 
 // Adding new entity does not require different route, just use modal.
-// *Details should not have different route, just call modal and deserialize the form.
+// Details should not have different route, just call modal and deserialize the form.
 const routes = [
   { path: "/applications", component: casApplications },
   { path: "/criteria", component: casCriteria },
@@ -66,9 +66,5 @@ const vm = new Vue({
       let index = arr.findIndex((obj) => obj[filterKey] === filterValue);
       return index;
     },
-
-    // Mapping the mutations this way we can access mutations methods 
-    // as normal vm methods (they can be called from the components.)
-    // ...mapMutations(["removeEntity", "saveEntity"]),
   },
 });
