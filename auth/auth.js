@@ -140,11 +140,13 @@ module.exports = {
   },
 
   authA: (req, res, next) => {
+    if (!req.headers["cookie"])
+      return res.json({ auth: false, msg: "No token provided" });
     const token = req.headers["cookie"].split(" ")[1];
     if (!token) return res.json({ msg: "You are not authorized" });
     try {
       const decodedToken = decodeToken(token);
-      console.log(decodedToken)
+      console.log(decodedToken);
       if (decodedToken.role === "super" || decodedToken.role === "admin") {
         req.decodedToken = decodedToken;
         next();

@@ -57,15 +57,13 @@
               </div>
             </div>
 
-
-            <div class="form-group">
+            <!--  <div class="form-group">
               <label>Custom Select</label>
               <select name="role" class="custom-select">
                 <option value="super">System Administrator</option>
                 <option value="admin">University Administrator</option>
               </select>
-            </div>
-
+            </div> -->
           </form>
           <button id="login-btn" class="btn btn-info float-right">Login</button>
         </div>
@@ -92,12 +90,18 @@
           contentType: "application/json",
           dataType: "json",
           data: JSON.stringify(info),
-          success: function(info){
+          success: function (info) {
+            console.log(info.token);
             document.cookie = `Bearer ${info.token}`;
+            if (info.role === "admin" || info.role === "super") {
+              window.location.replace("/admin");
+            } else {
+              window.location.replace("/user");
+            }
           },
-          error: function(err){
-            console.log("Error", err);
-          }
+          error: function (err) {
+            alert("Error on login");
+          },
         });
       });
     </script>
