@@ -12,6 +12,7 @@ const {
   Attribute,
 } = require("../db/model");
 const { config, urls } = require("../env");
+const { token } = require("morgan");
 
 const jwtOptions = {
   expiresIn: 86400,
@@ -70,10 +71,16 @@ const router = express.Router();
 
 router.get("/criteria", async (req, res) => {
   try {
+    let criteria;
     const token = decodeToken(req.headers.authentication);
+    if(token.role === "super"){
+      criteria = await Criteria.find();
+      return res.json(criteria);
+    }
+
     if (!token) return res.status(401).json({ auth: false });
     const user = await Admin.findOne({ _id: token.id }, { institution: 1 });
-    const criteria = await Criteria.find({ institution: user.institution });
+    criteria = await Criteria.find({ institution: user.institution });
 
     if (!criteria) throw new Error("Error fetching criteria");
     return res.json(criteria);
@@ -134,5 +141,22 @@ router.put("/criteria", async (req, res) => {
     console.log(err);
   }
 });
+
+router.delete("/criteria", async(req, res)=>{
+  const token = decodeToken(req.headers.authentication);
+  if (!token || token.role !== "admin" || token.role !== "super") {
+    return res.status(401).json({ auth: false });
+  }
+
+  let result;
+  if(token.role === "super"){
+    result = await Criteria.deleteOne({_id: req.body._id});
+    return res.json(result);
+  }
+
+  const user = Admin.findById(token.id, { institution: 1 });
+  result = await Criteria.deleteOne({_id: req.body._id, institution: user.institution});
+  return res.json(result);
+})
 
 module.exports = router;
