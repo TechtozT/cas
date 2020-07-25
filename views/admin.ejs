@@ -42,6 +42,11 @@
     <!-- Load vue -->
     <!-- <script src="vue/vue.min.js"></script>
     <script src="vue/vue-router.js"></script> -->
+    <style>
+      .select2-selection .select2-selection--single{
+        display: none;
+      }
+    </style>
   </head>
   <!-- Menues and navigation are renderd in the server (ejs) to decide which menue
   for which user should be displayed -->
@@ -73,12 +78,13 @@
               </a>
               <div class="dropdown-divider"></div>
               <a href="#" class="dropdown-item" data-toggle="modal"
-              data-target="#newCriteriaModal">
-                <i class="fas fa-filter mr-2"></i> Criteria
+              data-target="#newProgramModal">
+                <i class="fas fa-cubes mr-2"></i> Program
               </a>
               <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
-                <i class="fas fa-cubes mr-2"></i> Program
+              <a href="#" class="dropdown-item" data-toggle="modal" 
+              data-target="#newCriteriaModal">
+                <i class="fas fa-filter mr-2"></i> Criteria
               </a>
               <div class="dropdown-divider"></div>
               <a href="#" class="dropdown-item">
@@ -285,6 +291,7 @@
             <router-view></router-view>
 
             <new-program-modal :progs = "this.$store.state.progs"></new-program-modal>
+            <new-criteria-modal></new-criteria-modal>
           </div>
           <!-- /.container-fluid -->
         </div>
@@ -333,7 +340,7 @@
    
     <script src="libs/axios.js"></script>
     <script>
-      const role = JSON.stringify("<%= role %>");
+      const role = "<%= role %>";
     </script>
     <!-- Load vue -->
     <script src="vue/vuex.js"></script>

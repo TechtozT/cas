@@ -74,10 +74,9 @@ const vm = new Vue({
     },
 
     isSuper() {
-      if (role === "super") {
+      if (role.toString() === "super") {
         return true;
       }
-
       return false;
     },
 

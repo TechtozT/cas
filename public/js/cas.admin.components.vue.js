@@ -50,7 +50,132 @@ Vue.component("criteria", {
 
 Vue.component("criteria-details", {});
 
-// Vue.component("add-criteria", {});
+Vue.component("new-criteria-modal", {
+  props: ["criteria"],
+  template:
+  `
+    <div
+    class="modal fade"
+    id="newCriteriaModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="newCriteriaModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newCriteriaModalTitle">
+            Create new Criteria
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="newCriteria">
+            
+            <div class="row">
+              <div class="col-md-8" data-select2-id="7">
+                <div class="form-group">
+                  <label>Programs</label>
+                  <select name="programs[]" class="select2" multiple="multiple" data-placeholder="Select Programs" style="width: 100%;">
+                    <option>PCM</option>
+                    <option>PCB</option>
+                    <option>PGM</option>
+                    <option>CBG</option>
+                    <option>HKL</option>
+                    <option>BCOM</option>
+                    <option>PCOM</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Grade Point</label>
+                  <input value="0" name="gradPoint" class="form-control" type="number">
+                </div>
+              </div>
+            </div>
+
+            <p class="alert alert-light-blue">Mandatory Subjects</p>
+            <div v-for="i in 3" class="row">
+                <div class="col-md-8">
+                  <label> Subject Name </label>
+                  <select name="manSubs[]" class="select2" data-placeholder="Select Programs" style="width: 100%;">
+                    <option>Physics</option>
+                    <option>Chemistry</option>
+                    <option>Mathematics</option>
+                    <option>Biology</option>
+                    <option>Geography</option>
+                    <option>History</option>
+                    <option>Computer</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Grade</label>
+                    <select name="manGrades[]" class="select2" data-placeholder="Grade" style="width: 100%;">
+                    <option>A</option>
+                    <option>B+</option>
+                    <option>B</option>
+                    <option>C</option>
+                    <option>D</option>
+                    <option>E</option>
+                    <option>S</option>
+                  </select>
+                  </div>
+                </div>
+
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          <button @click="submitCriteria()" type="button" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  `,
+
+  methods: {
+    submitCriteria(){
+      const crit = $("#newCriteria").serializeObject();
+
+      const c = {};
+      c.programs = crit.programs;
+      c.mandatorySubs = [];
+      // const manSubs = crit.manSubs;
+      let o = {};
+      crit.manSubs.forEach((sub, i)=>{
+        o[sub] = crit.manGrades[i];
+        c.mandatorySubs.push(o);
+        o = {}
+      });
+
+      // push the criteria to the state.
+      this.$store.commit("saveEntity", {
+        entity: "criteria",
+        obj: c,
+      })
+    }
+  }
+});
 
 Vue.component("application", {
   template: 
@@ -83,16 +208,16 @@ Vue.component("new-program-modal", {
   `
     <div
     class="modal fade"
-    id="newCriteriaModal"
+    id="newProgramModal"
     tabindex="-1"
     role="dialog"
-    aria-labelledby="newCriteriaModal"
+    aria-labelledby="newProgramModal"
     aria-hidden="true"
   >
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="newCriteriaModalTitle">
+          <h5 class="modal-title" id="newProgramModalTitle">
             Create new Program
           </h5>
           <button
@@ -105,12 +230,21 @@ Vue.component("new-program-modal", {
           </button>
         </div>
         <div class="modal-body">
-          <form id="newCriteria">
+          <form id="newProgram">
             
             <div class="form-group">
               <label>Program name</label>
               <select name="program" class="form-control select2bs4" style="width: 100%;">
                 <option v-for ="prog in progs" :value = "prog._id" selected="selected">{{ prog.name }}</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Program criteria</label>
+              <select name="criteria" class="form-control select2bs4" style="width: 100%;">
+                <option value="_id" selected="selected">Default TCU criteria</option>
+                <option value="_id">Criteria 001</option>
+                <option value="_id">Criteria for IT</option>
               </select>
             </div>
 
@@ -127,15 +261,6 @@ Vue.component("new-program-modal", {
                   <input value="0" name="malesToFemalesRatio" class="form-control" type="number">
                 </div>
               </div>
-            </div>
-
-            <div class="form-group">
-              <label>Program criteria</label>
-              <select name="criteria" class="form-control select2bs4" style="width: 100%;">
-                <option value="_id" selected="selected">Default TCU criteria</option>
-                <option value="_id">Criteria 001</option>
-                <option value="_id">Criteria for IT</option>
-              </select>
             </div>
 
             <div class="row">
@@ -165,7 +290,7 @@ Vue.component("new-program-modal", {
           >
             Close
           </button>
-          <button @click="submitCriteria()" type="button" class="btn btn-primary">Save</button>
+          <button @click="submitProgram()" type="button" class="btn btn-primary">Save</button>
         </div>
       </div>
     </div>
@@ -181,11 +306,11 @@ Vue.component("new-program-modal", {
     }
   },
   methods: {
-    submitCriteria(){
-      const crit = $("#newCriteria").serializeObject();
-      // push the criteria to the state.
+    submitProgram(){
+      const crit = $("#newProgram").serializeObject();
+      // push the program to the state.
       this.$store.commit("saveEntity", {
-        entity: "criteria",
+        entity: "progs",
         obj: crit,
       })
       // submit the form.
