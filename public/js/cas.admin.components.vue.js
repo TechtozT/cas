@@ -29,12 +29,13 @@ Vue.component("program-details", {
 // Vue.component("add-program", {});
 
 Vue.component("criteria", {
+  props: ["name", "index"],
   template: 
   `
   <tr>
     <td>{{ index + 1 }}</td>
     <td @click="viewCriteria(id)">
-      <b> {{ name }} </b>
+      <span> {{ name }} </span>
     </td>
     <td>
       <button @click="viewCriteria(id)" class="btn btn-sm btn-warning">
@@ -205,6 +206,75 @@ Vue.component("new-criteria-modal", {
     }
   }
 });
+
+
+// Criteria
+const casCriteria = {
+  template: `
+  <div class="card">
+    <h5 class="card-header alert-light-blue">Criteria</h5>
+    <div class="card-body">
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width: 10px"><h5>#</h5></th>
+            <th><h5>Criteria name</h5></th> 
+            <th style="width: 10%; text-align: right"><h5>Actions</h5></th>  
+          </tr>
+        </thead>
+        <tbody v-if="this.$store.state.criteria && this.$store.state.criteria" class="table-elevate">
+          <criteria v-for="(crit, index) in this.$store.state.criteria"
+          v-bind:key = "index"
+          v-bind:index = "index"
+          v-bind:name = "crit.name"
+          ></criteria>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  `,
+
+  created(){
+    // load all criteria.
+    axios.get("/admin/criteria", {}).then(res=>{
+      this.$store.commit("loadCriteria", res.data);
+    })
+  },
+
+  methods: {
+    viewCriteria(id){
+      // call the modal form with the data of specified program
+      const prog = this.$store.state.progs.find(p => p._id === id);
+      console.log(prog);
+    },
+
+    // Fired when form is submitted.
+    saveCriteria(prog){
+      this.$store.commit("saveEntity", {
+        entity: "criteria",
+        o: prog,
+      })
+    },
+
+    // executed after user has confirmed the deletion operation.
+    removeCriteria(filterKey, filterValue){
+      const progs = this.$store.state.progs;
+      const index = this.$parent.findObject(progs, filterKey, filterValue)
+      const removedObject = this.$store.commit("removeEntity", {
+        entity: "criteria",
+        index: index,
+      });
+
+      console.log(removedObject);
+    },
+  }
+};
+
+
+
+
+
+
 
 Vue.component("application", {
   template: 
@@ -397,44 +467,6 @@ const casPrograms = {
       const index = this.$parent.findObject(progs, filterKey, filterValue)
       const removedObject = this.$store.commit("removeEntity", {
         entity: "progs",
-        index: index,
-      });
-
-      console.log(removedObject);
-    },
-  }
-};
-
-
-// Criteria
-const casCriteria = {
-  template: `
-  <div class="">
-  
-  </div>
-  `,
-
-  methods: {
-    viewCriteria(id){
-      // call the modal form with the data of specified program
-      const prog = this.$store.state.progs.find(p => p._id === id);
-      console.log(prog);
-    },
-
-    // Fired when form is submitted.
-    saveCriteria(prog){
-      this.$store.commit("saveEntity", {
-        entity: "criteria",
-        o: prog,
-      })
-    },
-
-    // executed after user has confirmed the deletion operation.
-    removeCriteria(filterKey, filterValue){
-      const progs = this.$store.state.progs;
-      const index = this.$parent.findObject(progs, filterKey, filterValue)
-      const removedObject = this.$store.commit("removeEntity", {
-        entity: "criteria",
         index: index,
       });
 

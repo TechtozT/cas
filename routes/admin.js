@@ -16,13 +16,13 @@ const { authA, decodeToken } = require("../auth/auth");
 const TCU_DEFAULT_ID = require("../env").TCU_DEFAULT_ID;
 
 // Check authentication for all admin routes
-router.get("/*", authA);
+// router.get("/*", authA);
 // router.post("/*", authA);
 
-router.get("/criteria", async (req, res) => {
+router.get("/criteria", authA, async (req, res) => {
   try {
     let criteria;
-    const token = req.decodeToken;
+    const token = req.decodedToken;
     if (token.role === "super") {
       // Can get all criteria
       criteria = await Criteria.find();

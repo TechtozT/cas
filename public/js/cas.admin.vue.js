@@ -34,6 +34,10 @@ const store = new Vuex.Store({
     loadPrograms(state, progs) {
       this.state.progs = progs;
     },
+
+    loadCriteria(state, crit){
+      this.state.criteria = crit
+    }
   },
 
   // Support asynchronous operations
