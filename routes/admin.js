@@ -12,10 +12,12 @@ const {
   Attribute,
 } = require("../db/model");
 
-const { authA } = require("../auth/auth");
+const { authA, decodeToken } = require("../auth/auth");
+const TCU_DEFAULT_ID = require("../env").TCU_DEFAULT_ID;
 
 // Check authentication for all admin routes
 router.get("/*", authA);
+// router.post("/*", authA);
 
 router.get("/criteria", async (req, res) => {
   try {
@@ -37,21 +39,26 @@ router.get("/criteria", async (req, res) => {
   }
 });
 
-router.post("/criteria", async (req, res) => {
+/**
+ * If criteria was posted by TCU i.e super then institution = _tcu.
+*/
+router.post("/criteria", authA, async (req, res) => {
+  console.log(req.body)
   try {
-    const token = decodeToken(req.headers.authentication);
-    if (!token || token.role !== "admin" || token.role !== "super") {
+    if (req.role !== "admin" && req.role !== "super") {
       return res.status(401).json({ auth: false });
     }
-    let criteria = new Criteria(req.body);
-    if (token.role === "super") {
+    let criteria;
+    if (req.role === "super") {
+      req.body.institution = TCU_DEFAULT_ID;
+      criteria = new Criteria(req.body);
       criteria = await criteria.save();
       return res.json(criteria);
     }
 
-    const user = await Admin.findOne({ _id: token.id }, { institution: 1 });
+    const user = await Admin.findOne({ _id: req.id }, { institution: 1 });
     if (!user) throw new Error("User not found");
-
+    criteria = new Criteria(req.body);
     criteria = await criteria.save();
     if (!criteria) throw new Error("Error creating criteria");
     return res.json(criteria);

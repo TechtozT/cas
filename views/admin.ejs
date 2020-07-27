@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css" />
     <!-- summernote -->
     <link rel="stylesheet" href="plugins/summernote/summernote-bs4.css" />
+    <link href="plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css" rel="stylesheet">
     <!-- Google Font: Source Sans Pro -->
     <!-- <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> -->
     <!-- Theme style -->
@@ -42,11 +43,6 @@
     <!-- Load vue -->
     <!-- <script src="vue/vue.min.js"></script>
     <script src="vue/vue-router.js"></script> -->
-    <style>
-      .select2-selection .select2-selection--single{
-        display: none;
-      }
-    </style>
   </head>
   <!-- Menues and navigation are renderd in the server (ejs) to decide which menue
   for which user should be displayed -->
@@ -360,6 +356,13 @@
         $(".select2bs4").select2({
           theme: "bootstrap4",
         });
+      });
+
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: true,
+        timer: 7000,
       });
     </script>
   </body>

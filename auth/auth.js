@@ -20,7 +20,9 @@ module.exports = {
    * @param user : The user credential
    */
 
-  register: async (user, entryLevel) => {
+  decodeToken,
+
+  register: async (user, entryLevel) => { 
     try {
       const result = await Applicant.findOne({ indexNo: user.indexNo });
       if (result) throw new Error("User already exist");
@@ -150,6 +152,7 @@ module.exports = {
         req.decodedToken = decodedToken;
         req.role = decodedToken.role;
         req.email = decodedToken.email;
+        req.id = decodedToken.id;
         return next();
       }
       return res.json({ auth: false, message: "You are not authorized" });

@@ -120,11 +120,11 @@ const criteria = new Schema(
         },
       ],
       // c -> certificate, ...
-      applicationLevel: {
+      /* applicationLevel: {
         type: String,
         required: true,
         enum: ["c", "d", "b", "m", "p"],
-      },
+      }, */
     },
 
     college: {},

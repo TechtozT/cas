@@ -10,7 +10,10 @@ const config = {
   SECRET: "super strong secret",
 };
 
+const TCU_DEFAULT_ID = "5f1ef0c40659542cd32fb714";
+
 module.exports = {
   urls,
   config,
+  TCU_DEFAULT_ID,
 };

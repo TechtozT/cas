@@ -79,7 +79,11 @@ Vue.component("new-criteria-modal", {
         </div>
         <div class="modal-body">
           <form id="newCriteria">
-            
+            <div class="form-group">
+              <label>Criteria Name</label>
+              <input name="name" class="form-control" type="text" placeholder="Name to identify this criteria">
+            </div>  
+
             <div class="row">
               <div class="col-md-8" data-select2-id="7">
                 <div class="form-group">
@@ -145,7 +149,11 @@ Vue.component("new-criteria-modal", {
           >
             Close
           </button>
-          <button @click="submitCriteria()" type="button" class="btn btn-primary">Save</button>
+          <button 
+          @click="submitCriteria()" 
+          type="button" class="btn btn-primary"
+          data-dismiss="modal"
+          >Save</button>
         </div>
       </div>
     </div>
@@ -159,6 +167,7 @@ Vue.component("new-criteria-modal", {
 
       const c = {};
       c.programs = crit.programs;
+      c.name = crit.name;
       c.mandatorySubs = [];
       // const manSubs = crit.manSubs;
       let o = {};
@@ -172,6 +181,26 @@ Vue.component("new-criteria-modal", {
       this.$store.commit("saveEntity", {
         entity: "criteria",
         obj: c,
+      });
+
+      axios.post("/admin/criteria", c).then(res =>{
+        $('#newCriteriaModal').modal('hide');
+        if(res.data){
+          Toast.fire({
+            type: "success",
+            title: "Successfully initiated your application, please proceed",
+          });
+        }
+      }).catch(err =>{
+        // remove last added criteria
+        this.$store.commit("removeEntity", {
+          entity: "criteria",
+          index: this.$store.state.criteria.length,
+        });
+        Toast.fire({
+          type: "error",
+          title: "There was an error saving the criteria",
+        });
       })
     }
   }
@@ -278,8 +307,6 @@ Vue.component("new-program-modal", {
               </div>
             </div>
 
-
-              
           </form>
         </div>
         <div class="modal-footer">
