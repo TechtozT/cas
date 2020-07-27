@@ -69,10 +69,7 @@ const institution = new Schema(
     desc: { type: String },
     programs: [
       {
-        /* name: { type: String, required: true },
-
-        // 0 - 4. Certificate - PHD.
-        level: { type: Number, required: true }, */
+        name: { type: String, required: true },
         program: { type: ObjectID, required: true, ref: "Programs" },
 
         // Can choose the available standard criteria (i.e TCU) or create new one.

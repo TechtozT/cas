@@ -148,7 +148,7 @@
         <a href="#" class="brand-link">
           <img
             src="images/cas_logo01.png"
-            alt="AdminLTE Logo"
+            alt="CAS Logo"
             class="brand-image img-circle elevation-3"
             style="opacity: 0.8;"
           />
@@ -180,7 +180,7 @@
               <li class="nav-item">
                 <router-link
                   to="/dashboard"
-                  class="nav-link router-link-exact-active router-link-active"
+                  class="nav-link"
                 >
                   <i class="nav-icon fas fa-tachometer-alt"></i>
                   <p>
@@ -286,7 +286,10 @@
           <div class="container-fluid">
             <router-view></router-view>
 
-            <new-program-modal :progs = "this.$store.state.progs"></new-program-modal>
+            <new-program-modal 
+            :progs = "this.$store.state.progs"
+            :criteria = "this.$store.state.criteria"
+            ></new-program-modal>
             <new-criteria-modal></new-criteria-modal>
           </div>
           <!-- /.container-fluid -->

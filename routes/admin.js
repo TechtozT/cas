@@ -41,9 +41,8 @@ router.get("/criteria", authA, async (req, res) => {
 
 /**
  * If criteria was posted by TCU i.e super then institution = _tcu.
-*/
+ */
 router.post("/criteria", authA, async (req, res) => {
-  console.log(req.body)
   try {
     if (req.role !== "admin" && req.role !== "super") {
       return res.status(401).json({ auth: false });
@@ -58,6 +57,7 @@ router.post("/criteria", authA, async (req, res) => {
 
     const user = await Admin.findOne({ _id: req.id }, { institution: 1 });
     if (!user) throw new Error("User not found");
+    req.body.institution = user.institution;
     criteria = new Criteria(req.body);
     criteria = await criteria.save();
     if (!criteria) throw new Error("Error creating criteria");
@@ -115,6 +115,62 @@ router.delete("/criteria", async (req, res) => {
     institution: user.institution,
   });
   return res.json(result);
+});
+
+/**
+ * Programs routes
+ */
+router.get("/programs", authA, async (req, res) => {
+  try {
+    let programs;
+    const token = req.decodedToken;
+    if (token.role === "super") {
+      // Can get all criteria
+      programs = await Program.find();
+      return res.json(programs);
+    }
+
+    const user = await Admin.findOne({ _id: token.id }, { institution: 1 });
+
+    programs = await Institution.findOne(
+      { _id: user.institution },
+      { programs: 1 }
+    );
+    if (!programs) throw new Error("Error fetching criteria");
+    return res.json(programs.programs);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.post("/program", authA, async (req, res) => {
+  try {
+    if (req.role !== "admin" && req.role !== "super") {
+      return res.status(401).json({ auth: false });
+    }
+    let programs;
+    if (req.role === "super") {
+      programs = new Program(req.body);
+      programs = await programs.save();
+      return res.json(programs);
+    }
+
+    const user = await Admin.findOne({ _id: req.id }, { institution: 1 });
+    if (!user) throw new Error("User not found");
+    programs = await Institution.updateOne(
+      { _id: user.institution },
+      { $push: { programs: req.body } }
+    );
+    if (!programs) throw new Error("Error creating criteria");
+    
+    programs = await Institution.findOne(
+      { _id: user.institution },
+      { programs: 1 }
+    );
+    return res.json(programs.programs);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 module.exports = router;

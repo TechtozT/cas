@@ -5,6 +5,8 @@ const store = new Vuex.Store({
     progs: [],
     criteria: [],
     applications: [],
+    progsAdm: [],
+    role: null,
   },
 
   // Synchronous operations
@@ -35,8 +37,16 @@ const store = new Vuex.Store({
       this.state.progs = progs;
     },
 
+    loadAdminPrograms(state, progs){
+      this.state.progsAdm = progs;
+    },
+
     loadCriteria(state, crit){
       this.state.criteria = crit
+    },
+
+    initRole(state, role){
+      this.state.role = role;
     }
   },
 
@@ -89,6 +99,28 @@ const vm = new Vue({
         .get("/api/program")
         .then((res) => {
           store.commit("loadPrograms", res.data);
+        })
+        .catch(function (err) {
+          console.log("Error: ", err);
+        });
+    },
+
+    loadAdminPrograms() {
+      axios
+        .get("/admin/programs")
+        .then((res) => {
+          store.commit("loadAdminPrograms", res.data);
+        })
+        .catch(function (err) {
+          console.log("Error: ", err);
+        });
+    },
+
+    loadCriteria() {
+      axios
+        .get("/admin/criteria")
+        .then((res) => {
+          store.commit("loadCriteria", res.data);
         })
         .catch(function (err) {
           console.log("Error: ", err);

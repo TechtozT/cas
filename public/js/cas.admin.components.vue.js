@@ -1,56 +1,3 @@
-Vue.component("program", {
-  template:
-  `
-  <tr>
-    <td>{{ index + 1 }}</td>
-    <td @click="viewProg(id)">
-      <b> {{ name }} </b>
-    </td>
-    <td>
-      <button @click="viewProg(id)" class="btn btn-sm btn-warning">
-        <i class="fas fa-edit"></i>
-      </button>
-      <button @click="removeProg(id)" class="btn btn-sm btn-danger">
-        <i class="fas fa-trash-alt"></i>
-      </button>
-    </td>
-  </tr>
-  `,
-
-  methods: {
-    
-  }
-});
-
-Vue.component("program-details", {
-  // A modal form which to de-serialize the program data.
-});
-
-// Vue.component("add-program", {});
-
-Vue.component("criteria", {
-  props: ["name", "index"],
-  template: 
-  `
-  <tr>
-    <td>{{ index + 1 }}</td>
-    <td @click="viewCriteria(id)">
-      <span> {{ name }} </span>
-    </td>
-    <td>
-      <button @click="viewCriteria(id)" class="btn btn-sm btn-warning">
-        <i class="fas fa-edit"></i>
-      </button>
-      <button @click="removeCriteria(id)" class="btn btn-sm btn-danger">
-        <i class="fas fa-trash-alt"></i>
-      </button>
-    </td>
-  </tr>
-  `
-});
-
-Vue.component("criteria-details", {});
-
 Vue.component("new-criteria-modal", {
   props: ["criteria"],
   template:
@@ -177,15 +124,14 @@ Vue.component("new-criteria-modal", {
         c.mandatorySubs.push(o);
         o = {}
       });
-
-      // push the criteria to the state.
-      this.$store.commit("saveEntity", {
-        entity: "criteria",
-        obj: c,
-      });
-
+    
       axios.post("/admin/criteria", c).then(res =>{
         $('#newCriteriaModal').modal('hide');
+        // push the criteria to the state.
+        this.$store.commit("saveEntity", {
+          entity: "criteria",
+          obj: res.data,
+        });
         if(res.data){
           Toast.fire({
             type: "success",
@@ -208,6 +154,51 @@ Vue.component("new-criteria-modal", {
 });
 
 
+Vue.component("criteria", {
+  props: ["name", "index", "id"],
+  template: 
+  `
+  <tr>
+    <td>{{ index + 1 }}</td>
+    <td @click="viewCriteria(id)">
+      <b> {{ name }} </b>
+    </td>
+    <td>
+      <button @click="viewCriteria(id)" class="btn btn-sm btn-warning">
+        <i class="fas fa-edit"></i>
+      </button>
+      <button @click="removeCriteria(id)" class="btn btn-sm btn-danger">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </td>
+  </tr>
+  `,
+
+  methods:{
+    viewCriteria(id){
+      // call the modal form with the data of specified program
+      /* const crit = this.$store.state.criteria.find(p => p._id === id);
+      const manSubs = [];
+      const manGrades = [];
+
+      for(let c in crit.mandatorySubs){
+        console.log(c)
+        manSubs.push(c.name);
+        manGrades.push(c.grade);
+      }
+
+      $('#critName').val(crit.name);
+      $('#critMandatorySubs').val(crit.mandatorySubs);
+      $('#critPrograms').val(crit.programs);
+      $('#critGradPoint').val(crit.gradPoint); */
+
+      $("#newCriteriaModal").modal("show");
+
+    },
+  }
+});
+
+
 // Criteria
 const casCriteria = {
   template: `
@@ -224,7 +215,8 @@ const casCriteria = {
         </thead>
         <tbody v-if="this.$store.state.criteria && this.$store.state.criteria" class="table-elevate">
           <criteria v-for="(crit, index) in this.$store.state.criteria"
-          v-bind:key = "index"
+          v-bind:key = "crit._id"
+          v-bind:id = "crit._id"
           v-bind:index = "index"
           v-bind:name = "crit.name"
           ></criteria>
@@ -244,16 +236,8 @@ const casCriteria = {
   methods: {
     viewCriteria(id){
       // call the modal form with the data of specified program
-      const prog = this.$store.state.progs.find(p => p._id === id);
+      const prog = this.$store.state.criteria.find(p => p._id === id);
       console.log(prog);
-    },
-
-    // Fired when form is submitted.
-    saveCriteria(prog){
-      this.$store.commit("saveEntity", {
-        entity: "criteria",
-        o: prog,
-      })
     },
 
     // executed after user has confirmed the deletion operation.
@@ -296,13 +280,9 @@ Vue.component("application", {
   `
 });
 
-Vue.component("application-details", {});
-
-
-
 
 Vue.component("new-program-modal", {
-  props: ["progs"],
+  props: ["progs", "criteria"],
   template:
   `
     <div
@@ -341,9 +321,7 @@ Vue.component("new-program-modal", {
             <div class="form-group">
               <label>Program criteria</label>
               <select name="criteria" class="form-control select2bs4" style="width: 100%;">
-                <option value="_id" selected="selected">Default TCU criteria</option>
-                <option value="_id">Criteria 001</option>
-                <option value="_id">Criteria for IT</option>
+                <option v-for="crt in criteria" :value="crt._id" >{{ crt.name }}</option>
               </select>
             </div>
 
@@ -387,7 +365,11 @@ Vue.component("new-program-modal", {
           >
             Close
           </button>
-          <button @click="submitProgram()" type="button" class="btn btn-primary">Save</button>
+          <button @click="submitProgram()" 
+          type="button" 
+          class="btn btn-primary"
+          data-dismiss="modal"
+          >Save</button>
         </div>
       </div>
     </div>
@@ -401,22 +383,60 @@ Vue.component("new-program-modal", {
     if (this.$store.state['progs'].length <= 0){
       this.$parent.loadPrograms()
     }
+
+    if (this.$store.state['criteria'].length <= 0){
+      this.$parent.loadCriteria()
+    }
   },
   methods: {
     submitProgram(){
-      const crit = $("#newProgram").serializeObject();
-      // push the program to the state.
-      this.$store.commit("saveEntity", {
-        entity: "progs",
-        obj: crit,
+      const prog = $("#newProgram").serializeObject();
+      const progName = this.$store.state.progs.find(p => p._id === prog.program);
+      prog.name = progName.name;
+      
+      axios.post("/admin/program", prog).then(res =>{
+        this.$store.commit("loadPrograms", res.data);
+        Toast.fire({
+          type: "success",
+          title: "Successfully created the program",
+        });
       })
-      // submit the form.
-      console.log(crit);
     }
   }
 });
 
+Vue.component("program", {
+  props: ["prog", "id", "index"],
+  template:
+  `
+  <tr>
+    <td>{{ index + 1 }}</td>
+    <td @click="viewProg(id)">
+      <b> {{ prog.name }} </b>
+    </td>
+    <td v-if="!isSuper()">
+      <b > {{ prog.maxCandidates }} </b>
+    </td>
+    <td v-if="!isSuper()">
+      <b> {{ prog.allocatedCandidates }} </b>
+    </td>
+    <td>
+      <button @click="viewProg(id)" class="btn btn-sm btn-warning">
+        <i class="fas fa-edit"></i>
+      </button>
+      <button @click="removeProg(id)" class="btn btn-sm btn-danger">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </td>
+  </tr>
+  `,
 
+  methods: {
+    isSuper(){
+      return this.$parent.isSuper();
+    },
+  }
+});
 
 
 // Views
@@ -430,15 +450,23 @@ const casPrograms = {
       <thead>
         <tr>
           <th style="width: 10px"><h5>#</h5></th>
-          <th><h5>Program name</h5></th>  
+          <th><h5>Program name</h5></th> 
+          <th style="width: 15%;" v-if="!isSuper()"><h5>Max Allocation</h5></th> 
+          <th style="width: 15%;" v-if="!isSuper()"><h5>Allocated</h5></th>  
+          <th style="width: 10%;"><h5>Actions</h5></th> 
         </tr>
       </thead>
-      <tbody v-if="progs && progs.length" class="table-elevate">
-        <program v-for="(prog, index) in progs"
-        v-bind:id = "prog._id"
-        v-bind:key = "prog._id"
+      <tbody v-if="this.$store.state.progs && this.$store.state.progs.length" 
+      class="table-elevate">
+        <program v-if="isSuper()" v-for="(prog, index) in this.$store.state.progs"
+        v-bind:prog = "prog"
         v-bind:index = "index"
-        v-bind:name = "prog.name"
+        v-bind:key = "prog._id"
+        ></program>
+        <program v-if="!isSuper()" v-for="(prog, index) in this.$store.state.progsAdm"
+        v-bind:prog = "prog"
+        v-bind:index = "index"
+        v-bind:key = "prog._id"
         ></program>
       </tbody>
     </table>
@@ -446,11 +474,23 @@ const casPrograms = {
   </div>
   `,
 
+  created(){
+    if (this.$store.state['progs'].length <= 0 && this.isSuper()){
+      this.$parent.loadPrograms()
+    } else if(this.$store.state['progsAdm'].length <= 0 && !this.isSuper()){
+      return this.$parent.loadAdminPrograms()
+    }req.body.institution
+  },
+
   methods: {
     viewProg(id){
       // call the modal form with the data of specified program
       const prog = this.$store.state.progs.find(p => p._id === id);
       console.log(prog);
+    },
+
+    isSuper(){
+      return this.$parent.isSuper();
     },
 
     // Fired when form is submitted.
