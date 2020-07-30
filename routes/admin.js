@@ -15,10 +15,6 @@ const {
 const { authA, decodeToken } = require("../auth/auth");
 const TCU_DEFAULT_ID = require("../env").TCU_DEFAULT_ID;
 
-// Check authentication for all admin routes
-// router.get("/*", authA);
-// router.post("/*", authA);
-
 router.get("/criteria", authA, async (req, res) => {
   try {
     let criteria;
@@ -30,6 +26,7 @@ router.get("/criteria", authA, async (req, res) => {
     }
 
     const user = await Admin.findOne({ _id: token.id }, { institution: 1 });
+    if (!user) throw new Error("User not found");
     criteria = await Criteria.find({ institution: user.institution });
 
     if (!criteria) throw new Error("Error fetching criteria");
@@ -162,7 +159,7 @@ router.post("/program", authA, async (req, res) => {
       { $push: { programs: req.body } }
     );
     if (!programs) throw new Error("Error creating criteria");
-    
+
     programs = await Institution.findOne(
       { _id: user.institution },
       { programs: 1 }
