@@ -170,4 +170,64 @@ router.post("/program", authA, async (req, res) => {
   }
 });
 
+router.get("institution", authA, async (req, res) => {
+  let institutions;
+  try {
+    if (req.role === "super") {
+      institutions = await Institution.find({});
+      return res.json(institutions);
+    }
+
+    const user = await Admin.findOne({ _id: req.id }, { institution: 1 });
+    if (!user) throw new Error("User not found");
+    institutions = await Institution.findById(user.institution);
+    return res.json(institutions);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.post("institution", authA, async (req, res) => {
+  //? Institution can only be posted by super
+  if (req.role !== "super") {
+    return res.status(403).json({ auth: false, msg: "Not authorized" });
+  }
+  let institutions;
+  try {
+    if (!req.body.length) {
+      institutions = new Institution(req.body);
+      institutions = await institutions.save();
+    } else {
+      institutions = await Institution.insertMany(req.body);
+    }
+
+    return res.json(institutions);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.post("user", authA, async (req, res) => {
+  //? If user is added by super then it has already have institution
+  //? otherwise user institution is admin institution.
+  let user;
+  try {
+    if (req.role === "super") {
+      user = new Admin(req.body);
+      user = await user.save();
+
+      return res.json(user);
+    }
+
+    const admin = await Admin.findOne({ id: req.id }, { institution: 1 });
+    req.body.institution = admin.institution;
+    user = new Admin(req.body);
+    user = await user.save();
+
+    return res.json(user);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 module.exports = router;
