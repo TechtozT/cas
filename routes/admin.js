@@ -170,7 +170,7 @@ router.post("/program", authA, async (req, res) => {
   }
 });
 
-router.get("institution", authA, async (req, res) => {
+router.get("/institution", authA, async (req, res) => {
   let institutions;
   try {
     if (req.role === "super") {
@@ -187,7 +187,7 @@ router.get("institution", authA, async (req, res) => {
   }
 });
 
-router.post("institution", authA, async (req, res) => {
+router.post("/institution", authA, async (req, res) => {
   //? Institution can only be posted by super
   if (req.role !== "super") {
     return res.status(403).json({ auth: false, msg: "Not authorized" });
@@ -207,7 +207,7 @@ router.post("institution", authA, async (req, res) => {
   }
 });
 
-router.post("user", authA, async (req, res) => {
+router.post("/user", authA, async (req, res) => {
   //? If user is added by super then it has already have institution
   //? otherwise user institution is admin institution.
   let user;
@@ -230,7 +230,7 @@ router.post("user", authA, async (req, res) => {
   }
 });
 
-router.post("school_results", authA, async (req, res) => {
+router.post("/school_results", authA, async (req, res) => {
   //? only super
   if (req.role !== "super") {
     return res.status(403).json({ msg: "Not authorized" });
