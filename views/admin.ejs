@@ -69,7 +69,7 @@
                 <i class="fas fa-school mr-2"></i> Institution
               </a>
               <div class="dropdown-divider"></div>
-              <a v-if="isSuper()" href="#" class="dropdown-item">
+              <a href="#" class="dropdown-item">
                 <i class="fas fa-user mr-2"></i> User
               </a>
               <div class="dropdown-divider"></div>
@@ -189,15 +189,16 @@
                 </router-link>
               </li>
 
-              <li v-if="isSuper()" class="nav-item">
+              <li class="nav-item">
                 <router-link
                   to="/institutions"
                   class="nav-link"
                 >
                   <i class="nav-icon fas fa-school"></i>
-                  <p>
+                  <p v-if="isSuper()">
                     Institutions
                   </p>
+                  <p v-else >Institution</p>
                 </router-link>
               </li>
 
@@ -237,7 +238,7 @@
                 </router-link>
               </li>
 
-              <li v-if="isSuper()" class="nav-item">
+              <li class="nav-item">
                 <router-link
                   to="/users"
                   class="nav-link"
