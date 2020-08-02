@@ -248,23 +248,27 @@ router.post("/school_results", authA, async (req, res) => {
 
 router.get("/applications", authA, async (req, res) => {
   let applications;
-  if (req.role === "super") {
-    applications = await Application.find({});
-    if (!applications) throw new Error("Failed to fetch applications");
+  try {
+    if (req.role === "super") {
+      applications = await Application.find({});
+      if (!applications) throw new Error("Failed to fetch applications");
+
+      return res.json(applications);
+    }
+
+    const user = await Admin.findById(req.id, { institution: 1 });
+    if (!user) throw new Error("Error fetching user");
+
+    applications = await Application.find({
+      "entry.institution.inst": user.institution,
+    });
+
+    if (!applications) throw new Error("Error fetching applications");
 
     return res.json(applications);
+  } catch (err) {
+    console.log(err);
   }
-
-  const user = await Admin.findById(req.id, { institution: 1 });
-  if (!user) throw new Error("Error fetching user");
-
-  applications = await Application.find({
-    "entry.institution.inst": user.institution,
-  });
-
-  if(!applications) throw new Error("Error fetching applications");
-
-  return res.json(applications);
 });
 
 module.exports = router;
