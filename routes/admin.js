@@ -230,4 +230,19 @@ router.post("user", authA, async (req, res) => {
   }
 });
 
+router.post("school_results", authA, async (req, res) => {
+  //? only super
+  if (req.role !== "super") {
+    return res.status(403).json({ msg: "Not authorized" });
+  }
+
+  try {
+    const results = await SchoolResult.insertMany(req.body);
+    if (!results) throw new Error("Failed to upload results");
+    return res.json(results);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 module.exports = router;
