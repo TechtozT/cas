@@ -65,7 +65,8 @@
               <span> New </span>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-              <a v-if="isSuper()" href="#" class="dropdown-item">
+              <a v-if="isSuper()" href="#" class="dropdown-item" data-toggle="modal"
+              data-target="#newInstModal">
                 <i class="fas fa-school mr-2"></i> Institution
               </a>
               <div class="dropdown-divider"></div>
@@ -292,6 +293,7 @@
             :criteria = "this.$store.state.criteria"
             ></new-program-modal>
             <new-criteria-modal></new-criteria-modal>
+            <new-inst></new-inst>
           </div>
           <!-- /.container-fluid -->
         </div>

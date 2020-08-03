@@ -479,7 +479,7 @@ const casPrograms = {
       this.$parent.loadPrograms()
     } else if(this.$store.state['progsAdm'].length <= 0 && !this.isSuper()){
       return this.$parent.loadAdminPrograms()
-    }req.body.institution
+    }
   },
 
   methods: {
@@ -514,6 +514,96 @@ const casPrograms = {
     },
   }
 };
+
+Vue.component("new-inst", {
+  template:
+  `
+  <div
+    class="modal fade"
+    id="newInstModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="newInstModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newInstModalTitle">
+            Create new Program
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="newInst">
+
+            <div class="form-group">
+              <label>Institution Name</label>
+              <input name="name" class="form-control" 
+              placeholder="Institution Name" type="text" required>
+            </div>
+
+            <div class="form-group">
+              <label>Registration Number</label>
+              <input name="regNo" class="form-control" type="text" 
+              placeholder="Registration Number" required>
+            </div>
+
+
+
+            <div class="form-group">
+              <label>Website</label>
+              <input name="website" class="form-control" type="text"
+              placeholder="www.example.ac.tz" required>
+            </div>
+
+            <div class="form-group">
+              <label>Description</label>
+              <textarea name="desc" class="form-control" rows="3" placeholder=""></textarea>
+            </div>
+
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          <button @click="submitInst()" 
+          type="button" 
+          class="btn btn-primary"
+          data-dismiss="modal"
+          >Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  `,
+
+  methods: {
+    submitInst(){
+      const inst = $("#newInst").serializeObject();
+      console.log(inst);
+      axios.post("/admin/institution", inst).then(res =>{
+        Toast.fire({
+          type: "success",
+          title: `Successfully created ${res.data.name}`,
+        });
+      })
+    }
+  }
+});
 
 
 // Applications
