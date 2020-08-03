@@ -594,7 +594,6 @@ Vue.component("new-inst", {
   methods: {
     submitInst(){
       const inst = $("#newInst").serializeObject();
-      console.log(inst);
       axios.post("/admin/institution", inst).then(res =>{
         Toast.fire({
           type: "success",
@@ -604,6 +603,70 @@ Vue.component("new-inst", {
     }
   }
 });
+
+Vue.component("inst", {
+  props: ["inst", "id", "index"],
+  template:
+  `
+  <tr>
+    <td>{{ index + 1 }}</td>
+    <td>
+      <span> {{ inst.name }} </span>
+    </td>
+    <td>
+      <span> {{ inst.regNo }} </span>
+    </td>
+    <td>
+      <span> {{ inst.website }} </span>
+    </td>
+    <td>
+      <button class="btn btn-sm btn-warning">
+        <i class="fas fa-edit"></i>
+      </button>
+      <button class="btn btn-sm btn-danger">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </td>
+  </tr>
+  `,
+});
+
+const casInstitutions = {
+  template: 
+  `
+  <div class="card">
+    <h5 class="card-header alert-light-blue">Institutions</h5>
+    <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width: 10px"><h5>#</h5></th>
+          <th><h5>Name</h5></th> 
+          <th><h5>Reg No</h5></th> 
+          <th><h5>Website</h5></th>  
+          <th style="width: 10%;"><h5>Actions</h5></th> 
+        </tr>
+      </thead>
+      <tbody v-if="this.$store.state.institutions && this.$store.state.institutions.length" 
+      class="table-elevate">
+        <inst v-for="(inst, index) in this.$store.state.institutions"
+        v-bind:inst = "inst"
+        v-bind:index = "index"
+        v-bind:key = "inst._id"
+        ></inst>
+      </tbody>
+    </table>
+    </div>
+  </div>
+  `,
+
+  created(){
+    if (this.$store.state['institutions'].length <= 0 ){
+      this.$parent.loadInstitutions()
+    } 
+  },
+
+}
 
 
 // Applications

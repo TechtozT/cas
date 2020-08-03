@@ -7,6 +7,7 @@ const store = new Vuex.Store({
     applications: [],
     progsAdm: [],
     role: null,
+    institutions: [],
   },
 
   // Synchronous operations
@@ -37,17 +38,21 @@ const store = new Vuex.Store({
       this.state.progs = progs;
     },
 
-    loadAdminPrograms(state, progs){
+    loadAdminPrograms(state, progs) {
       this.state.progsAdm = progs;
     },
 
-    loadCriteria(state, crit){
-      this.state.criteria = crit
+    loadCriteria(state, crit) {
+      this.state.criteria = crit;
     },
 
-    initRole(state, role){
+    initRole(state, role) {
       this.state.role = role;
-    }
+    },
+
+    loadInstitutions(state, inst) {
+      this.state.institutions = inst;
+    },
   },
 
   // Support asynchronous operations
@@ -60,6 +65,7 @@ const routes = [
   { path: "/applications", component: casApplications },
   { path: "/criteria", component: casCriteria },
   { path: "/programs", component: casPrograms },
+  { path: "/institutions", component: casInstitutions },
 ];
 
 const router = new VueRouter({
@@ -125,6 +131,14 @@ const vm = new Vue({
         .catch(function (err) {
           console.log("Error: ", err);
         });
+    },
+
+    loadInstitutions() {
+      axios.get("/admin/institution").then((res) => {
+        store.commit("loadInstitutions", res.data)
+      }).catch((err) => {
+        console.log("Error: ", err);
+      });
     },
   },
 });

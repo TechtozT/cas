@@ -181,7 +181,7 @@ router.get("/institution", authA, async (req, res) => {
 
     const user = await Admin.findOne({ _id: req.id }, { institution: 1 });
     if (!user) throw new Error("User not found");
-    institutions = await Institution.findById(user.institution);
+    institutions = await Institution.find({_id: user.institution});
     return res.json(institutions);
   } catch (err) {
     console.log(err);
