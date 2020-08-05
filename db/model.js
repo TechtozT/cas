@@ -181,21 +181,25 @@ const attribute = new Schema({
   maxAppliedInstitutions: {
     type: Number,
     required: true,
+    default: 10,
   },
 
   minAppliedInstitutions: {
     type: Number,
     required: true,
+    default: 10,
   },
 
   maxProgramsPerInstitution: {
     type: Number,
     required: true,
+    default: 10,
   },
 
   minProgramsPerInstitution: {
     type: Number,
     required: true,
+    default: 10,
   },
 
   maxAppliedPrograms: { type: Number, required: true, default: 10 },
