@@ -22,6 +22,12 @@ exports.levelDict = ["o", "c", "a", "d", "b", "m"];
 
 exports.gradeDict = ["A", "B", "C", "D", "E", "S", "F"];
 
+exports.setDefaultAttr = async ()=>{
+  let attr = new mod.Attribute({});
+  attr = await attr.save()
+  return attr;
+}
+
 /* const test = new mod.Application(
   {indexNo: "S1895",
   applicant: "5ea6ec96f6a0d96df55ed73a",
