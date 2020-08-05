@@ -200,7 +200,7 @@ const attribute = new Schema({
 
   maxAppliedPrograms: { type: Number, required: true, default: 10 },
 
-  level: { type: String, required: true, enum: ["c", "d", "b", "m", "p"] },
+  // level: { type: String, required: true, enum: ["c", "d", "b", "m", "p"] },
 });
 
 // For demonstrations:
