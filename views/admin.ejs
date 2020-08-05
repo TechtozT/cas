@@ -92,10 +92,7 @@
               <a v-if="isSuper()" href="#" class="dropdown-item">
                 <i class="fas fa-asterisk mr-2"></i> Attribute
               </a>
-              <div class="dropdown-divider"></div>
-              <a v-if="isSuper()" href="#" class="dropdown-item">
-                <i class="fas fa-file-alt mr-2"></i> Student Results
-              </a>
+              
               </a>
             </div>
           </li>
@@ -342,7 +339,9 @@
     <script src="plugins/serializeObject/jquery.serialize-object.min.js"></script>
     <!-- AdminLTE App -->
     <script src="dist/js/adminlte.js"></script>
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+
+    <!-- bs-custom-file-input -->
+    <script src="plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
    
     <script src="libs/axios.js"></script>
     <script>
@@ -374,6 +373,12 @@
         showConfirmButton: true,
         timer: 7000,
       });
+
+      
+      $(document).ready(function () {
+        bsCustomFileInput.init();
+      });
+
     </script>
   </body>
 </html>

@@ -55,9 +55,9 @@ const store = new Vuex.Store({
       this.state.institutions = inst;
     },
 
-    loadUsers(state, users){
+    loadUsers(state, users) {
       this.state.users = users;
-    }
+    },
   },
 
   // Support asynchronous operations
@@ -72,6 +72,7 @@ const routes = [
   { path: "/programs", component: casPrograms },
   { path: "/institutions", component: casInstitutions },
   { path: "/users", component: casUsers },
+  { path: "/results", component: casSchoolResults },
 ];
 
 const router = new VueRouter({

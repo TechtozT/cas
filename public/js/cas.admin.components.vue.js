@@ -806,43 +806,6 @@ Vue.component("new-user-modal", {
 })
 
 
-// Applications
-const casApplications = {
-  template: `
-  <div class="">
-  
-  </div>
-  `,
-
-  methods: {
-    viewApplication(id){
-      // call the modal form with the data of specified program
-      const prog = this.$store.state.progs.find(p => p._id === id);
-      console.log(prog);
-    },
-
-    // Fired when form is submitted.
-    saveApplication(prog){
-      this.$store.commit("saveEntity", {
-        entity: "applications",
-        o: prog,
-      })
-    },
-
-    // executed after user has confirmed the deletion operation.
-    removeApplication(filterKey, filterValue){
-      const progs = this.$store.state.progs;
-      const index = this.$parent.findObject(progs, filterKey, filterValue)
-      const removedObject = this.$store.commit("removeEntity", {
-        entity: "applications",
-        index: index,
-      });
-
-      console.log(removedObject);
-    },
-  }
-};
-
 Vue.component("user", {
   props: ["user", "index"],
   template: 
@@ -905,5 +868,78 @@ const casUsers = {
     if(this.$store.state["users"].length <= 0){
       this.$parent.loadUsers();
     }
+  },
+}
+
+// Applications
+const casApplications = {
+  template: `
+  <div class="">
+  
+  </div>
+  `,
+
+  methods: {
+    viewApplication(id){
+      // call the modal form with the data of specified program
+      const prog = this.$store.state.progs.find(p => p._id === id);
+      console.log(prog);
+    },
+
+    // Fired when form is submitted.
+    saveApplication(prog){
+      this.$store.commit("saveEntity", {
+        entity: "applications",
+        o: prog,
+      })
+    },
+
+    // executed after user has confirmed the deletion operation.
+    removeApplication(filterKey, filterValue){
+      const progs = this.$store.state.progs;
+      const index = this.$parent.findObject(progs, filterKey, filterValue)
+      const removedObject = this.$store.commit("removeEntity", {
+        entity: "applications",
+        index: index,
+      });
+
+      console.log(removedObject);
+    },
+  }
+};
+
+const casSchoolResults = {
+  template: 
+  `
+  <div class="w-50 ml-auto mr-auto mt-5 pt-5">
+
+    <div class="card">
+      <h5 class="card-header alert-light-blue">
+        Upload School Results
+      </h5>
+      <div class="card-body">
+        <div class="form-group">
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="uploadResults" accept=".xlsx, .xls">
+            <label class="custom-file-label" for="uploadResults">Choose file</label>
+          </div>
+        </div>
+
+        <div class="row">
+          <button class="btn btn-info  ml-auto mr-auto"> 
+            <i class="fas fa-file-upload"> </i> Upload 
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+  `,
+
+  methods: {
+    uploadResult(){
+
+    },
   },
 }
