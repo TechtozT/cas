@@ -9,6 +9,7 @@ const store = new Vuex.Store({
     role: null,
     institutions: [],
     users: [],
+    attributes: undefined,
   },
 
   // Synchronous operations
@@ -57,6 +58,10 @@ const store = new Vuex.Store({
 
     loadUsers(state, users) {
       this.state.users = users;
+    },
+
+    loadAttr(state, attr){
+      this.state.attributes = attr;
     },
   },
 
@@ -163,5 +168,13 @@ const vm = new Vue({
           alert("There was an error fetching users");
         });
     },
+
+    loadAttr(){
+      axios.get("/admin/attributes").then(res => {
+        store.commit("loadAttr", res.data);
+      }).catch(err => {
+        alert("There was an error");
+      })
+    }
   },
 });

@@ -16,6 +16,7 @@ const {
 
 const { authA, decodeToken } = require("../auth/auth");
 const TCU_DEFAULT_ID = require("../env").TCU_DEFAULT_ID;
+const { setDefaultAttr } = require("../helpers/helper");
 
 router.get("/criteria", authA, async (req, res) => {
   try {
@@ -307,6 +308,33 @@ router.get("/applications", authA, async (req, res) => {
     if (!applications) throw new Error("Error fetching applications");
 
     return res.json(applications);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get("/attributes", authA, async (req, res) => {
+  // even admin can access attributes cannot write it.
+  try {
+    let attr = await Attribute.findOne();
+    if (!attr) {
+      attr = await setDefaultAttr();
+      if (!attr) throw new Error("Error creating default attributes");
+    }
+    return res.json(attr);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.put("/attributes", authA, async (req, res) => {
+  if (req.role !== "super") {
+    res.status(403).json({ msg: "Not authorized" });
+  }
+
+  try {
+    const result = await Attribute.updateOne({}, req.body);
+    res.json(result);
   } catch (err) {
     console.log(err);
   }

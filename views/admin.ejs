@@ -89,7 +89,8 @@
                 <i class="fas fa-gem mr-2"></i> Application
               </a>
               <div class="dropdown-divider"></div>
-              <a v-if="isSuper()" href="#" class="dropdown-item">
+              <a v-if="isSuper()" href="#" class="dropdown-item" data-toggle="modal"
+              data-target="#attributesModal">
                 <i class="fas fa-asterisk mr-2"></i> Attribute
               </a>
               
@@ -295,6 +296,9 @@
             <new-user-modal 
             :institutions = "this.$store.state.institutions">
             </new-user-modal>
+            <attributes-modal
+            :attr = "this.$store.state.attributes"
+            ></attributes-modal>
           </div>
           <!-- /.container-fluid -->
         </div>

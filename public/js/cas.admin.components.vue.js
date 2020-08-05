@@ -943,3 +943,117 @@ const casSchoolResults = {
     },
   },
 }
+
+Vue.component("attributes-modal", {
+  props: ["attr"],
+  template: 
+  `
+  <div v-if="isSuper() && attr !== undefined" 
+    class="modal fade"
+    id="attributesModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="attributesModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="attributesModalTitle">
+            Application's Attributes
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="attributes">
+            
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Min Applied Institutions</label>
+                  <input id="minAppInst" 
+                  :value = "attr.minAppliedInstitutions"
+                  name="minAppliedInstitutions" 
+                  class="form-control" type="number">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Max Applied Institutions</label>
+                  <input id="maxAppInst" 
+                  :value = "attr.maxAppliedInstitutions"
+                  name="maxAppliedInstitutions" 
+                  class="form-control" type="number">
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label>Max Applied Programs</label>
+                  <input id="maxProg" 
+                  :value = "attr.maxAppliedPrograms"
+                  name="maxAppliedPrograms" 
+                  class="form-control" type="number">
+                </div>
+              </div>
+
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          <button @click="submitAttributes()" 
+          type="button" 
+          class="btn btn-primary"
+          data-dismiss="modal"
+          >Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  `,
+
+  created(){
+    if(this.$store.state.attributes === undefined){
+      this.$parent.loadAttr();
+    }
+  },
+
+  methods: {
+    isSuper(){
+      return this.$parent.isSuper();
+    },
+
+    submitAttributes(){
+      const attr = $("#attributes").serializeObject();
+      axios.put("/admin/attributes", attr).then(res => {
+        if(res.data.nModified > 0){
+          Toast.fire({
+            type: "success",
+            title: `Attributes was successfully updated`,
+          });
+        }
+      }).catch(err => {
+        alert("There was an error please try again");
+      })
+    }
+  }
+})
+
+const casAttributes = {
+  
+}
