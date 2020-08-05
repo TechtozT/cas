@@ -60,7 +60,7 @@ const store = new Vuex.Store({
       this.state.users = users;
     },
 
-    loadAttr(state, attr){
+    loadAttr(state, attr) {
       this.state.attributes = attr;
     },
   },
@@ -78,6 +78,7 @@ const routes = [
   { path: "/institutions", component: casInstitutions },
   { path: "/users", component: casUsers },
   { path: "/results", component: casSchoolResults },
+  { path: "/attributes", component: casAttributes },
 ];
 
 const router = new VueRouter({
@@ -169,12 +170,15 @@ const vm = new Vue({
         });
     },
 
-    loadAttr(){
-      axios.get("/admin/attributes").then(res => {
-        store.commit("loadAttr", res.data);
-      }).catch(err => {
-        alert("There was an error");
-      })
-    }
+    loadAttr() {
+      axios
+        .get("/admin/attributes")
+        .then((res) => {
+          store.commit("loadAttr", res.data);
+        })
+        .catch((err) => {
+          alert("There was an error");
+        });
+    },
   },
 });

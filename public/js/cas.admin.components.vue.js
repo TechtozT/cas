@@ -1054,6 +1054,59 @@ Vue.component("attributes-modal", {
   }
 })
 
+Vue.component("attr-view", {
+  props: ["attr"],
+  template: 
+  `
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Attributes</h3>
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered">
+        <thead>                  
+          <tr>
+            <th style="width: 10px">#</th>
+            <th>Attribute Name</th>
+            <th>Attribute Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Max Applied Programs</td>
+            <td> {{ attr.maxAppliedPrograms }} </td>
+            </tr>
+            <tr>
+            <td>2</td>
+            <td>Min Institutions Per Program</td>
+            <td> {{ attr.minAppliedInstitutions }} </td>
+            </tr>
+            <tr>
+            <td>3</td>
+            <td>Max Institutions Per Program</td>
+            <td> {{ attr.maxAppliedInstitutions }} </td>
+            </tr>
+          </tr>
+        
+        </tbody>
+      </table>
+    </div>
+  </div>
+  `,
+})
+
 const casAttributes = {
-  
+  template:
+  `
+    <attr-view :attr = "this.$store.state.attributes"
+    v-if="this.$store.state.attributes !== undefined"
+    ></attr-view>
+  `,
+
+  created(){
+    if(this.$store.state.attributes === undefined){
+      this.$parent.loadAttr();
+    }
+  }
 }
