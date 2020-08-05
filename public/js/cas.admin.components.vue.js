@@ -668,6 +668,143 @@ const casInstitutions = {
 
 }
 
+Vue.component("new-user-modal", {
+
+  props: ["institutions"],
+  template: 
+  `
+  <div
+    class="modal fade"
+    id="newUserModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="newUserModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newUserModalTitle">
+            Create new User
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="newUser">
+            <div v-if="isSuper()" class="form-group">
+              <label>Institution</label>
+              <select name="institution" class="form-control select2bs4" style="width: 100%;">
+                <option value="super" >Super Administrator</option>
+                <option v-for="inst in institutions" :value="inst._id" >{{ inst.name }}</option>
+              </select>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>First Name</label>
+                  <input name="firstName" class="form-control" type="text">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Middle Name</label>
+                  <input name="middleName" class="form-control" type="text">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>Last Name</label>
+                  <input name="lastName" class="form-control" type="text">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Email</label>
+                  <input name="email" class="form-control" type="text">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Phone Number</label>
+                  <input name="phoneNumber" class="form-control" type="text">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+              <div class="form-group">
+                <label>Gender</label>
+                <select name="gender" class="form-control select2bs4" style="width: 100%;">
+                  <option value="M" >Male</option>
+                  <option value="F" >Female</option>
+                </select>
+              </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label>Password</label>
+                  <input name="password" class="form-control" type="password">
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-dismiss="modal"
+          >
+            Close
+          </button>
+          <button @click="submitUser()" 
+          type="button" 
+          class="btn btn-primary"
+          data-dismiss="modal"
+          >Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  `,
+
+  created(){
+    if (this.$store.state['institutions'].length <= 0){
+      this.$parent.loadInstitutions()
+    }
+  },
+
+  methods: {
+    isSuper(){
+      return this.$parent.isSuper();
+    },
+
+    submitUser(){
+      const user = $("#newUser").serializeObject();
+      axios.post("/admin/user", user).then(res=>{
+        if (res.data) {
+          Toast.fire({
+            type: "success",
+            title: `Successfully created ${res.data.firstName}`,
+          });
+        }
+      })
+    }
+  }
+})
+
 
 // Applications
 const casApplications = {

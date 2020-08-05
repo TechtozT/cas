@@ -70,7 +70,8 @@
                 <i class="fas fa-school mr-2"></i> Institution
               </a>
               <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">
+              <a href="#" class="dropdown-item" data-toggle="modal"
+              data-target="#newUserModal">
                 <i class="fas fa-user mr-2"></i> User
               </a>
               <div class="dropdown-divider"></div>
@@ -294,6 +295,9 @@
             ></new-program-modal>
             <new-criteria-modal></new-criteria-modal>
             <new-inst></new-inst>
+            <new-user-modal 
+            :institutions = "this.$store.state.institutions">
+            </new-user-modal>
           </div>
           <!-- /.container-fluid -->
         </div>

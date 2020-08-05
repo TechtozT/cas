@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcryptjs");
 
 const router = express.Router();
 
@@ -181,7 +182,7 @@ router.get("/institution", authA, async (req, res) => {
 
     const user = await Admin.findOne({ _id: req.id }, { institution: 1 });
     if (!user) throw new Error("User not found");
-    institutions = await Institution.find({_id: user.institution});
+    institutions = await Institution.find({ _id: user.institution });
     return res.json(institutions);
   } catch (err) {
     console.log(err);
@@ -211,8 +212,28 @@ router.post("/institution", authA, async (req, res) => {
 router.post("/user", authA, async (req, res) => {
   //? If user is added by super then it has already have institution
   //? otherwise user institution is admin institution.
+
   let user;
   try {
+    if (req.role == "admin") {
+      const user = await Admin.findById(req.id, { institution: 1 });
+      req.body.institution = user.institution;
+      req.body.role = "admin";
+    }
+
+    if (req.role === "super") {
+      if (req.body.institution === "super") {
+        //? replace institution to default tcu _id
+        req.body.institution = TCU_DEFAULT_ID;
+        req.body.role = "super";
+      } else {
+        req.body.role = "admin";
+      }
+    }
+
+    //? Hash password
+    req.body.password = bcrypt.hashSync(req.body.password, 11);
+
     if (req.role === "super") {
       user = new Admin(req.body);
       user = await user.save();
@@ -220,7 +241,7 @@ router.post("/user", authA, async (req, res) => {
       return res.json(user);
     }
 
-    const admin = await Admin.findOne({ id: req.id }, { institution: 1 });
+    const admin = await Admin.findOne({ _id: req.id }, { institution: 1 });
     req.body.institution = admin.institution;
     user = new Admin(req.body);
     user = await user.save();
