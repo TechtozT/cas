@@ -209,6 +209,26 @@ router.post("/institution", authA, async (req, res) => {
   }
 });
 
+router.get("/users", authA, async (req, res) => {
+  try {
+    if (req.role === "admin") {
+      const user = Admin.findById(req.id, { institution: 1 });
+      const users = await Admin.find({ institution: user.institution });
+      return res.status(200).json(users);
+    }
+
+    if (req.role === "super") {
+      const users = await Admin.find(
+        { institution: TCU_DEFAULT_ID },
+        { firstName: 1, lastName: 1, email: 1, phoneNumber: 1 }
+      );
+      return res.status(200).json(users);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 router.post("/user", authA, async (req, res) => {
   //? If user is added by super then it has already have institution
   //? otherwise user institution is admin institution.

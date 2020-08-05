@@ -8,6 +8,7 @@ const store = new Vuex.Store({
     progsAdm: [],
     role: null,
     institutions: [],
+    users: [],
   },
 
   // Synchronous operations
@@ -53,6 +54,10 @@ const store = new Vuex.Store({
     loadInstitutions(state, inst) {
       this.state.institutions = inst;
     },
+
+    loadUsers(state, users){
+      this.state.users = users;
+    }
   },
 
   // Support asynchronous operations
@@ -66,6 +71,7 @@ const routes = [
   { path: "/criteria", component: casCriteria },
   { path: "/programs", component: casPrograms },
   { path: "/institutions", component: casInstitutions },
+  { path: "/users", component: casUsers },
 ];
 
 const router = new VueRouter({
@@ -134,11 +140,27 @@ const vm = new Vue({
     },
 
     loadInstitutions() {
-      axios.get("/admin/institution").then((res) => {
-        store.commit("loadInstitutions", res.data)
-      }).catch((err) => {
-        console.log("Error: ", err);
-      });
+      axios
+        .get("/admin/institution")
+        .then((res) => {
+          store.commit("loadInstitutions", res.data);
+        })
+        .catch((err) => {
+          console.log("Error: ", err);
+        });
+    },
+
+    loadUsers() {
+      axios
+        .get("/admin/users")
+        .then((res) => {
+          if (res.data) {
+            store.commit("loadUsers", res.data);
+          }
+        })
+        .catch((err) => {
+          alert("There was an error fetching users");
+        });
     },
   },
 });

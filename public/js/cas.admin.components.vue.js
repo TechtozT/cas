@@ -842,3 +842,68 @@ const casApplications = {
     },
   }
 };
+
+Vue.component("user", {
+  props: ["user", "index"],
+  template: 
+  `
+  <tr>
+    <td>{{ index + 1 }}</td>
+    <td>
+      <span> {{ user.firstName }} {{ user.lastName}} </span>
+    </td>
+    <td>
+      <span> <a :href="'mailto: ' + user.email"> {{ user.email }} </a> </span>
+    </td>
+    <td>
+      <span> {{ user.phoneNumber }} </span>
+    </td>
+    <td>
+      <button class="btn btn-sm btn-warning">
+        <i class="fas fa-edit"></i>
+      </button>
+      <button class="btn btn-sm btn-danger">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </td>
+  </tr>
+  `
+});
+
+const casUsers = {
+  template: 
+  `
+  <div class="card">
+    <h5 class="card-header alert-light-blue">
+      Administrators
+    </h5>
+    <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width: 10px"><h5>#</h5></th>
+          <th><h5>Name</h5></th> 
+          <th><h5>Email</h5></th> 
+          <th><h5>Phone</h5></th>  
+          <th style="width: 10%;"><h5>Actions</h5></th> 
+        </tr>
+      </thead>
+      <tbody v-if="this.$store.state.users && this.$store.state.users.length" 
+      class="table-elevate">
+        <user v-for="(user, index) in this.$store.state.users"
+        v-bind:user = "user"
+        v-bind:index = "index"
+        v-bind:key = "user._id"
+        ></user>
+      </tbody>
+    </table>
+    </div>
+  </div>
+  `,
+
+  created(){
+    if(this.$store.state["users"].length <= 0){
+      this.$parent.loadUsers();
+    }
+  },
+}
