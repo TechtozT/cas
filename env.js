@@ -11,9 +11,11 @@ const config = {
 };
 
 const TCU_DEFAULT_ID = "5f1ef0c40659542cd32fb714";
+const ATTR_DEFAULT_ID = "";
 
 module.exports = {
   urls,
   config,
   TCU_DEFAULT_ID,
+  ATTR_DEFAULT_ID,
 };
