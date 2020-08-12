@@ -219,7 +219,7 @@ const institution = {
       for (let x=0; x<selectedInst.institutions.length; x++){
         let match = this.institutions.find(m => m._id === selectedInst.institutions[x]);
         ins.push({
-          instID: match._id, 
+          inst: match._id, 
           instName: match.name
         })
       }
