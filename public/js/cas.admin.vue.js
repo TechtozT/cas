@@ -63,6 +63,10 @@ const store = new Vuex.Store({
     loadAttr(state, attr) {
       this.state.attributes = attr;
     },
+
+    loadApplications(state, applications) {
+      state.applications = applications;
+    },
   },
 
   // Support asynchronous operations
@@ -177,7 +181,18 @@ const vm = new Vue({
           store.commit("loadAttr", res.data);
         })
         .catch((err) => {
-          alert("There was an error");
+          alert("There was an error, please try again");
+        });
+    },
+
+    loadApplications() {
+      axios
+        .get("/admin/applications")
+        .then((res) => {
+          store.commit("loadApplications", res.data);
+        })
+        .catch((err) => {
+          alert("There was an error, please try again");
         });
     },
   },

@@ -255,32 +255,6 @@ const casCriteria = {
 };
 
 
-
-
-
-
-
-Vue.component("application", {
-  template: 
-  `
-  <tr>
-    <td>{{ index + 1 }}</td>
-    <td @click="viewApplication(id)">
-      <b> {{ name }} </b>
-    </td>
-    <td>
-      <button @click="viewApplication(id)" class="btn btn-sm btn-warning">
-        <i class="fas fa-edit"></i>
-      </button>
-      <button @click="removeApplication(id)" class="btn btn-sm btn-danger">
-        <i class="fas fa-trash-alt"></i>
-      </button>
-    </td>
-  </tr>
-  `
-});
-
-
 Vue.component("new-program-modal", {
   props: ["progs", "criteria"],
   template:
@@ -444,7 +418,7 @@ Vue.component("program", {
 const casPrograms = {
   template: `
   <div class="card">
-    <h5 class="card-header alert-light-blue">Select program of your choice</h5>
+    <h5 class="card-header alert-light-blue">Programs</h5>
     <div class="card-body">
     <table class="table">
       <thead>
@@ -871,16 +845,109 @@ const casUsers = {
   },
 }
 
+Vue.component("application", {
+  props: ["app", "index"],
+  template: 
+  `
+    <tr data-toggle="collapse" :data-target="'#id'+app._id"
+    aria-expanded="false" :aria-controls="'id'+app._id">
+      <td>{{ index + 1 }}</td>
+      <td>
+        {{ app.indexNo }}
+      </td>
+      <td>
+        {{ app.year }}
+      </td>
+      <td> 
+        {{ getAllocatedInstName(app, app.allocatedInst) }}
+      </td>
+    </tr>
+  `,
+
+
+  methods: {
+    getAllocatedInstName(app, instID){
+      let inst;
+      for (let i in app.entry){
+        inst = app.entry[i].institutions.find(pr => pr.inst === instID);
+        if (inst) break;
+      }
+      if(!inst) return "Not allocated";
+      return inst.instName;
+    }
+  }
+});
+
+Vue.component("app-details", {
+  props: ["app"],
+  template: 
+  `
+  <tr class="collapse" :id="'id'+app._id">
+    <td colspan="4">
+      <div class="card-body">
+        <div v-for="entry in app.entry">
+          <h5 class="card-header alert-light-blue rounded-0">
+            {{ entry.progName }}
+          </h5>
+
+          <ul class="list-group list-group-flush">
+            <li v-for="(inst, index) in entry.institutions" class="list-group-item">
+              {{ index + 1 }}: {{ inst.instName }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </td>
+  </tr>
+  `
+})
+
 // Applications
 const casApplications = {
   template: `
-  <div class="">
-  
+  <div class="card">
+    <h5 class="card-header alert-light-blue">Applications</h5>
+    <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width: 10px">#</th>
+          <th style="width: 20%">Reg No</th> 
+          <th style="width: 15%">Year</th> 
+          <th>Allocation</th>  
+        </tr>
+      </thead>
+      <tbody v-if="this.$store.state.applications && this.$store.state.applications.length" 
+      class="table-elevate">
+        <template v-for="(app, index) in this.$store.state.applications">
+          <application
+          v-bind:app = "app"
+          v-bind:index = "index"
+          v-bind:key = "app._id"
+          ></application>
+
+          <app-details
+          v-bind:app = "app"
+          v-bind:key = "'id'+app._id">
+          </app-details>
+        </template>
+      </tbody>
+    </table>
+    </div>
   </div>
   `,
 
+  created(){
+    this.$parent.loadApplications();
+  },
+
   methods: {
-    viewApplication(id){
+    createApp(){
+      for( i in this.$store.state.applications){
+
+      }
+    }
+   /*  viewApplication(id){
       // call the modal form with the data of specified program
       const prog = this.$store.state.progs.find(p => p._id === id);
       console.log(prog);
@@ -904,7 +971,7 @@ const casApplications = {
       });
 
       console.log(removedObject);
-    },
+    }, */
   }
 };
 
