@@ -893,6 +893,7 @@ Vue.component("app-details", {
           <ul class="list-group list-group-flush">
             <li v-for="(inst, index) in entry.institutions" class="list-group-item">
               {{ index + 1 }}: {{ inst.instName }}
+              <i v-if="inst.inst === app.allocatedInst && entry.program === app.allocatedProg" class="fas fa-check-circle float-right color-light-green"></i>
             </li>
           </ul>
         </div>
@@ -940,39 +941,6 @@ const casApplications = {
   created(){
     this.$parent.loadApplications();
   },
-
-  methods: {
-    createApp(){
-      for( i in this.$store.state.applications){
-
-      }
-    }
-   /*  viewApplication(id){
-      // call the modal form with the data of specified program
-      const prog = this.$store.state.progs.find(p => p._id === id);
-      console.log(prog);
-    },
-
-    // Fired when form is submitted.
-    saveApplication(prog){
-      this.$store.commit("saveEntity", {
-        entity: "applications",
-        o: prog,
-      })
-    },
-
-    // executed after user has confirmed the deletion operation.
-    removeApplication(filterKey, filterValue){
-      const progs = this.$store.state.progs;
-      const index = this.$parent.findObject(progs, filterKey, filterValue)
-      const removedObject = this.$store.commit("removeEntity", {
-        entity: "applications",
-        index: index,
-      });
-
-      console.log(removedObject);
-    }, */
-  }
 };
 
 const casSchoolResults = {
