@@ -893,14 +893,24 @@ Vue.component("app-details", {
           <ul class="list-group list-group-flush">
             <li v-for="(inst, index) in entry.institutions" class="list-group-item">
               {{ index + 1 }}: {{ inst.instName }}
-              <i v-if="inst.inst === app.allocatedInst && entry.program === app.allocatedProg" class="fas fa-check-circle float-right color-light-green"></i>
+              <i 
+              v-if="inst.inst === app.allocatedInst && entry.program === app.allocatedProg" 
+              class="fas fa-check-circle float-right color-light-green"
+              data-toggle="tooltip" title="Allocated to this institution"
+              ></i>
             </li>
           </ul>
         </div>
       </div>
     </td>
   </tr>
-  `
+  `,
+
+  created(){
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+  }
 })
 
 // Applications
