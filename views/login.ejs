@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Central Admission System | Log in</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css" />
+    <!-- icheck bootstrap -->
+    <link
+      rel="stylesheet"
+      href="plugins/icheck-bootstrap/icheck-bootstrap.min.css"
+    />
+    <!-- Theme style -->
+    <link rel="stylesheet" href="dist/css/adminlte.min.css" />
+    <!-- Google Font: Source Sans Pro -->
+    <!-- <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> -->
+
+    <style>
+      .display-none {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body class="hold-transition login-page" style="margin-top: -3rem;">
+    <div class="login-box">
+      <div class="login-logo">
+        <a href="/">CAS</a>
+      </div>
+      <!-- /.login-logo -->
+      <div class="card">
+        <div class="card-body login-card-body">
+          <div id="login-from-wrapper">
+            <p class="login-box-msg">Sign in to start your session</p>
+            <form id="cas-login">
+              <div class="input-group mb-3">
+                <input
+                  name="email"
+                  type="email"
+                  class="form-control"
+                  placeholder="Username / Index No"
+                />
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-envelope"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <input
+                  name="password"
+                  type="password"
+                  class="form-control"
+                  placeholder="Password"
+                />
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-lock"></span>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <button id="login-btn" class="btn btn-info float-right">
+              Login
+            </button>
+            <button id="register-user" class="btn btn-dark">
+              Register
+            </button>
+          </div>
+
+          <div id="register-form-wrapper" class="display-none">
+            <p class="login-box-msg">Please Register to apply</p>
+            <form id="register-form">
+              <div class="input-group mb-3">
+                <input
+                  name="firstName"
+                  type="text"
+                  class="form-control"
+                  placeholder="First Name"
+                />
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-user-alt"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <input
+                  name="middleName"
+                  type="text"
+                  class="form-control"
+                  placeholder="Middle Name"
+                />
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-user-alt"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <input
+                  name="lastName"
+                  type="text"
+                  class="form-control"
+                  placeholder="Last Name"
+                />
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-user-alt"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group mb-3">
+                <select name="gender" class="custom-select">
+                  <option selected value="">Select Gender</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                </select>
+              </div>
+              <div class="input-group mb-3">
+                <input
+                  name="phoneNumber"
+                  type="text"
+                  class="form-control"
+                  placeholder="Phone Number"
+                />
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-phone"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <input
+                  name="indexNo"
+                  type="text"
+                  class="form-control"
+                  placeholder="Index No: e.g S1200.0543.2014"
+                />
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-gem"></span>
+                  </div>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <input
+                  name="password"
+                  type="password"
+                  class="form-control"
+                  placeholder="Password"
+                />
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-lock"></span>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <button id="register-btn" class="btn btn-info float-right">
+              Register
+            </button>
+            <button id="login-user" href="#" class="btn btn-dark">Login</button>
+          </div>
+        </div>
+        <!-- /.login-card-body -->
+      </div>
+    </div>
+    <!-- /.login-box -->
+
+    <!-- jQuery -->
+    <script src="plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="plugins/serializeObject/jquery.serialize-object.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="dist/js/adminlte.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        $("#login-btn").click(function () {
+          var info = $("#cas-login").serializeObject();
+          $.ajax({
+            type: "POST",
+            url: "/auth/login",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(info),
+            success: function (info) {
+              if (!info.token) {
+                alert("There was an error please fill in the fields correctly");
+                return;
+              }
+              document.cookie = `Bearer ${info.token}`;
+              if (info.role === "admin" || info.role === "super") {
+                window.location.replace("/admin");
+              } else {
+                window.location.replace("/user");
+              }
+            },
+            error: function (err) {
+              alert("Error on login");
+            },
+          });
+        });
+
+        $("#login-user").click(function () {
+          $("#register-form-wrapper").addClass("display-none")
+          $("#login-from-wrapper").removeClass("display-none");
+        });
+
+        $("#register-user").click(function () {
+          $("#register-form-wrapper").removeClass("display-none")
+          $("#login-from-wrapper").addClass("display-none");
+        });
+
+        // register user
+        $("#register-btn").click(function(){
+          const info = $("#register-form").serializeObject();
+          const keys = Object.keys(info);
+          for(let i=0; i<keys.length; i++){
+            if(!info[keys[i]]){ 
+              alert("please fill in all required field");
+              return;
+            }
+            
+          }
+          $.ajax({
+            type: "POST",
+            url: "/auth/register",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(info),
+            success: function (info) {
+              console.log(info)
+              if(info.msg){
+                alert("User already exist");
+              }
+              if (!info.token) {
+                alert("There was an error please try again");
+                return;
+              }
+
+              document.cookie = `Bearer ${info.token}`;
+              window.location.replace("/user");
+            },
+            error: function (err) {
+              alert("Error on login");
+            },
+          });
+        })
+      });
+    </script>
+  </body>
+</html>

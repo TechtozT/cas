@@ -61,18 +61,7 @@ const programs = {
     loadPrograms(){
       axios.get("/api/program")
       .then((res)=>{
-        //! hard coding 
-        /* res.data.forEach(function (pro, index){
-          if(index % 2 === 0){
-            pro.selected = false;
-          } else{
-            pro.selected = true;
-          }
-          // pro.qualified = true;
-        }); */
-
         this.progs = res.data;
-      
       }).catch(function(err){
         console.log("Error: ", err)
       })
@@ -415,6 +404,30 @@ const Application = {
   `
   ,
 };
+
+/* Vue.component("user-reg", {
+  template:
+  `
+  
+  `,
+
+  methods:{
+    register(user){
+      axios.post("/user/register", user)
+      .then(res=>{
+        if(res.data.token){
+          document.cookie = `Bearer ${res.data.token}`;
+          window.location.replace("/user");
+        } else{
+          alert("There was an error please try again");
+        }
+      })
+      .catch(err=>{
+        alert("There was an error");
+      })
+    }
+  }
+}) */
 
 
 

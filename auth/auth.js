@@ -22,10 +22,11 @@ module.exports = {
 
   decodeToken,
 
-  register: async (user, entryLevel) => { 
+  register: async (user, entryLevel = "school") => {
     try {
-      const result = await Applicant.findOne({ indexNo: user.indexNo });
-      if (result) throw new Error("User already exist");
+      let result;
+      const fUser = await Applicant.findOne({ indexNo: user.indexNo });
+      if (fUser) throw new Error("User already exist");
 
       if (entryLevel === "school") {
         result = await SchoolResult.findOne({ indexNo: user.indexNo });
@@ -42,9 +43,10 @@ module.exports = {
 
       user.password = bcrypt.hashSync(user.password, 11);
 
-      const newUser = new Applicant(user);
+      let newUser = new Applicant(user);
       newUser = await newUser.save();
       if (!newUser) throw new Error("Failed to create user");
+
       const userToken = jwt.sign(
         { id: newUser._id, indexNo: newUser.indexNo },
         config.SECRET,
@@ -52,7 +54,6 @@ module.exports = {
       );
 
       return {
-        user: newUser,
         userToken: userToken,
       };
     } catch (err) {
@@ -60,35 +61,6 @@ module.exports = {
     }
   },
 
-  login: async (cred) => {
-    try {
-      // if (token.userToken) throw new Error("User already logged in");
-      const applicant = await Applicant.findOne(
-        { indexNo: cred.indexNo },
-        { indexNo: 1, password: 1 }
-      );
-
-      if (!applicant)
-        return {
-          user: null,
-          userToken: null,
-        };
-
-      if (!bcrypt.compareSync(cred.password, applicant.password))
-        throw new Error("Password mismatch");
-      return {
-        userToken: jwt.sign(
-          { id: applicant._id, indexNo: applicant.indexNo },
-          config.SECRET,
-          jwtOptions
-        ),
-
-        user: applicant,
-      };
-    } catch (err) {
-      throw err;
-    }
-  },
   /**
    * token should be sent by client when making request in authorization header.
    */
@@ -141,13 +113,57 @@ module.exports = {
     }
   },
 
+  login: (user, info) => {
+    console.log("Info", info);
+    console.log("user", user);
+    try {
+      if (!bcrypt.compareSync(info.password, user.password)) {
+        throw new Error("Password mismatch");
+      }
+
+      const userToken = jwt.sign(
+        { id: user._id, indexNo: user.indexNo },
+        config.SECRET,
+        jwtOptions
+      );
+
+      return userToken;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  authU: (req, res, next) => {
+    if (!req.headers["cookie"])
+      return res.json({ auth: false, msg: "No token provided" });
+    const token = req.headers["cookie"].split(" ")[1];
+    if (token === "undefined") return res.redirect("/login");
+    if (token.expiresIn > new Date(Date.now())) {
+      return res.redirect("/login");
+    }
+
+    try {
+      const decodedToken = decodeToken(token);
+      if (!decodedToken.id)
+        return res.json({ auth: false, message: "You are not authorized" });
+
+      req.id = decodedToken.id;
+      req.indexNo = decodedToken.indexNo;
+      return next();
+    } catch (err) {
+      console.log(err);
+      return res.end();
+    }
+  },
+
   authA: (req, res, next) => {
     if (!req.headers["cookie"])
       return res.json({ auth: false, msg: "No token provided" });
     const token = req.headers["cookie"].split(" ")[1];
-    if (!token) return res.json({ msg: "You are not authorized" });
+    if (token === "undefined") return res.redirect("/login");
     try {
       const decodedToken = decodeToken(token);
+      if (!decodedToken.id) return res.redirect("/login");
       if (decodedToken.role === "super" || decodedToken.role === "admin") {
         req.decodedToken = decodedToken;
         req.role = decodedToken.role;

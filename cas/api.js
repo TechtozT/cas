@@ -52,7 +52,7 @@ const validateInstitutions = async (indexNo, program) => {
 
     return results;
   } catch (err) {
-    throw err;
+    console.log(err);
   }
 };
 

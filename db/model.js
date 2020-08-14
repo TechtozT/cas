@@ -25,13 +25,14 @@ const applicant = new Schema(
     firstName: { type: String, required: true },
     middleName: { type: String },
     lastName: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    // email: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: true, unique: true },
 
     gender: { type: String, required: true },
 
     // for tracking students results.
     indexNo: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
 
     applications: [{ type: ObjectID, required: true, ref: "Application" }],
   },

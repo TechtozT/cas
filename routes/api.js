@@ -23,25 +23,16 @@ const {
   initApplication,
 } = require("../resolvers/index");
 
-const checkAuth = (req, res, next) => {
-  /* Check route first */
-  const entity = req.params.entity;
-  if (!models[entity]) return res.sendStatus(404);
-  /* Check if authorized to this route */
-  // if (!auth.isAuth(req.headers.authorization)) return res.status(401).json({ auth: false });
-  next();
-};
 
-router.post("/:entity", checkAuth, async (req, res) => {
-  //! Hard coded: Come from decoded jwt.
-  const user = "S1298.0245.2014";
+router.post("/:entity", auth.authU, async (req, res) => {
+  const user = req.indexNo;
   const entity = req.params.entity;
 
   let result;
 
   if (entity === "application") {
     const data = {
-      applicant: "5ef2895002c412580851f58e",
+      applicant: req.id,
       level: "b",
     };
 
@@ -52,7 +43,7 @@ router.post("/:entity", checkAuth, async (req, res) => {
   return res.json(create(models[entity], req.body));
 });
 
-router.get("/:entity", checkAuth, async (req, res) => {
+router.get("/:entity", auth.authU, async (req, res) => {
   const entity = req.params.entity;
   const options = req.query.options;
   const projection = req.query.projection;
@@ -61,8 +52,7 @@ router.get("/:entity", checkAuth, async (req, res) => {
   let result;
   // If entity is institutions and program is specified.
   if (entity === "institution") {
-    //! Hard code: this come from decode jwt
-    const user = "S1298.0245.2014";
+    const user = req.indexNo;
 
     const opt = JSON.parse(options);
     if (opt.hasOwnProperty("programs.program")) {
@@ -75,8 +65,8 @@ router.get("/:entity", checkAuth, async (req, res) => {
   return res.json(result);
 });
 
-router.put("/:entity", checkAuth, async (req, res) => {
-  const user = "S1298.0245.2014";
+router.put("/:entity", auth.authU, async (req, res) => {
+  const user = req.indexNo;
   let result;
   const entity = req.params.entity;
   if (entity === "application") {
@@ -100,12 +90,12 @@ router.put("/:entity", checkAuth, async (req, res) => {
   }
 });
 
-router.delete("/:entity", checkAuth, async (req, res) => {
+router.delete("/:entity", auth.authU, async (req, res) => {
   return res.json(remove(models[entity], req.body));
 });
 
 // registration, login with jwt.
-router.post("/auth/:entry", (req, res) => {
+/* router.post("/auth/:entry", (req, res) => {
   const token = req.headers.authorization;
   if (auth.isAuth(token))
     return res.json({ auth: true, message: "Already logged in" });
@@ -144,6 +134,6 @@ router.post("/auth/:entry", (req, res) => {
       .status(200)
       .json({ auth: true, user: result.user, token: result.userToken });
   }
-});
+}); */
 
 module.exports = router;
