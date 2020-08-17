@@ -84,6 +84,7 @@ const insertSchoolResults = async () => {
   return result;
 };
 
-insertSchoolResults().then((r) => {
+/* insertSchoolResults().then((r) => {
   console.log(r);
 });
+ */

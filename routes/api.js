@@ -53,7 +53,6 @@ router.get("/:entity", auth.authU, async (req, res) => {
   // If entity is institutions and program is specified.
   if (entity === "institution") {
     const user = req.indexNo;
-
     const opt = JSON.parse(options);
     if (opt.hasOwnProperty("programs.program")) {
       result = await validateInstitutions(user, opt["programs.program"]);

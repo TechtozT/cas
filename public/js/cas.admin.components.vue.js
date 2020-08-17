@@ -51,13 +51,13 @@ Vue.component("new-criteria-modal", {
               <div class="col-md-4">
                 <div class="form-group">
                   <label>Grade Point</label>
-                  <input value="0" name="gradPoint" class="form-control" type="number">
+                  <input type="number" value="0" name="gradPoint" class="form-control">
                 </div>
               </div>
             </div>
 
             <p class="alert alert-light-blue">Mandatory Subjects</p>
-            <div v-for="i in 3" class="row">
+            <div v-for="i in 2" class="row">
                 <div class="col-md-8">
                   <label> Subject Name </label>
                   <select name="manSubs[]" class="select2" data-placeholder="Select Programs" style="width: 100%;">
@@ -114,14 +114,17 @@ Vue.component("new-criteria-modal", {
       const crit = $("#newCriteria").serializeObject();
 
       const c = {};
-      c.programs = crit.programs;
       c.name = crit.name;
-      c.mandatorySubs = [];
+      c.school = {}
+      c.school.programs = crit.programs;
+      c.school.gradPoint = crit.gradPoint;
+      c.school.mandatorySubs = [];
       // const manSubs = crit.manSubs;
       let o = {};
       crit.manSubs.forEach((sub, i)=>{
-        o[sub] = crit.manGrades[i];
-        c.mandatorySubs.push(o);
+        o.name = sub;
+        o.grade = crit.manGrades[i];
+        c.school.mandatorySubs.push(o);
         o = {}
       });
     

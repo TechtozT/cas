@@ -1,11 +1,11 @@
 const mod = require("../db/model");
 const {
-  validateResultOverProgram,
+  compareResultOverProgram,
 } = require("./index");
 // const { unpackDoc } = require("../helpers/helper");
 
 /**
- * It assumes that user can apply this program level
+ * We assumes that user can apply this program level
  * @param indexNo The user index number.
  * @param program The specified program in which user specify.
  *
@@ -33,7 +33,7 @@ const validateInstitutions = async (indexNo, program) => {
 
       if (!criteria) throw new Error("Error fetching criteria");
 
-      if (validateResultOverProgram(stdResult, criteria)) {
+      if (compareResultOverProgram(stdResult, criteria)) {
         // console.log("OK: ", institutions[i]._doc.program)
         results.push({
           _id: institutions[i].id,

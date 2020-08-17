@@ -114,8 +114,6 @@ module.exports = {
   },
 
   login: (user, info) => {
-    console.log("Info", info);
-    console.log("user", user);
     try {
       if (!bcrypt.compareSync(info.password, user.password)) {
         throw new Error("Password mismatch");
