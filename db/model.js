@@ -215,7 +215,7 @@ const schoolResult = new Schema({
   level: { type: String, required: true, enum: ["o", "a"] },
   enrolledYear: { type: String, required: true },
   center: { type: String, required: true },
-  gradePoint: { type: Number, required: true },
+  gradPoint: { type: Number, required: true },
   program: { type: String, required: true }, // combination: PCM, PCB, CBG, EGM ....
   subjects: [
     {

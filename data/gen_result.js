@@ -74,7 +74,7 @@ school_result.forEach((re, i) => {
     grade += gradeDict[sub.grade];
   });
 
-  school_result[i].gradePoint = grade;
+  school_result[i].gradPoint = grade;
   grade = 0;
 });
 
@@ -84,7 +84,6 @@ const insertSchoolResults = async () => {
   return result;
 };
 
-/* insertSchoolResults().then((r) => {
+insertSchoolResults().then((r) => {
   console.log(r);
 });
- */
