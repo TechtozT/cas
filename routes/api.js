@@ -27,7 +27,6 @@ const {
 router.post("/:entity", auth.authU, async (req, res) => {
   const user = req.indexNo;
   const entity = req.params.entity;
-  console.log(req.id)
   let result;
 
   if (entity === "application") {
@@ -80,7 +79,7 @@ router.put("/:entity", auth.authU, async (req, res) => {
         program: req.body[i].progID,
         progName: req.body[i].progName,
         choice: i,
-        point: stdResult.gradePoint,
+        point: stdResult.gradPoint,
         institutions: req.body[i].institutions,
       });
     }
