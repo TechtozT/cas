@@ -27,7 +27,7 @@ const {
 router.post("/:entity", auth.authU, async (req, res) => {
   const user = req.indexNo;
   const entity = req.params.entity;
-
+  console.log(req.id)
   let result;
 
   if (entity === "application") {

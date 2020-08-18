@@ -25,7 +25,7 @@ module.exports = {
         throw new Error("Error fetching application");
       } else {
         // create one
-        data.indexNo = "S1298.0245.2014";
+        data.indexNo = indexNo;
         let application = new mod.Application(data);
         application = await application.save();
         return application;
