@@ -30,7 +30,9 @@ router.get("/criteria", authA, async (req, res) => {
 
     const user = await Admin.findOne({ _id: token.id }, { institution: 1 });
     if (!user) throw new Error("User not found");
-    criteria = await Criteria.find({ institution: user.institution });
+    criteria = await Criteria.find({
+      $or: [{ institution: user.institution }, { institution: TCU_DEFAULT_ID }],
+    });
 
     if (!criteria) throw new Error("Error fetching criteria");
     return res.json(criteria);
