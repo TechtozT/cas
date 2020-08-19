@@ -23,7 +23,6 @@ const {
   initApplication,
 } = require("../resolvers/index");
 
-
 router.post("/:entity", auth.authU, async (req, res) => {
   const user = req.indexNo;
   const entity = req.params.entity;
@@ -48,14 +47,22 @@ router.get("/:entity", auth.authU, async (req, res) => {
   const projection = req.query.projection;
   const population = req.query.population;
 
+  const user = req.indexNo;
+
   let result;
   // If entity is institutions and program is specified.
   if (entity === "institution") {
-    const user = req.indexNo;
     const opt = JSON.parse(options);
     if (opt.hasOwnProperty("programs.program")) {
       result = await validateInstitutions(user, opt["programs.program"]);
     }
+  } else if (entity === "application") {
+    result = await get(
+      models[entity],
+      { indexNo: user },
+      projection,
+      population
+    );
   } else {
     result = await get(models[entity], options, projection, population);
   }
