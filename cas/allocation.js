@@ -146,8 +146,8 @@ const allocate = async () => {
             let not = new Notification({
               type: "important",
               title: "Allocation notification",
-              body: `You are allocated at <b class="alert alert-light-green">${doc.entry.institutions[k].instName} 
-              university</b> in <b class="alert alert-light-green">${doc.entry.progName}</b> program.
+              body: `You are allocated at <b class="color-light-blue">${doc.entry.institutions[k].instName} 
+              university</b> in <b class="color-light-blue">${doc.entry.progName}</b> program.
               You are required to attend to the allocated university/institution for further
               activities`,
               subscriber: subscriber._id,
