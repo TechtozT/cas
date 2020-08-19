@@ -32,7 +32,7 @@ const allocate = async () => {
     for (let choice = 0; choice < maxAppliedPrograms; choice++) {
       applications = await Application.aggregate([
         {
-          $match: { year: thisYear, "entry.choice": choice },
+          $match: { year: thisYear, "entry.choice": choice, allocated: false },
         },
         { $unwind: "$entry" },
         { $match: { "entry.choice": choice } },
@@ -190,4 +190,4 @@ const resetAllocation = async () => {
 };
 
 // resetAllocation();
-allocate();
+// allocate();

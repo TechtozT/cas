@@ -470,7 +470,27 @@ const Notification = {
   }
 }
 
+const Home = {
+  template:
+  `
+  <div>
 
+    <h5 class="p-3 alert alert-light-green border-radius-0">
+      Application window is open, to apply follow the instruction below.
+    </h5>
+
+    <div class="p-3">
+      1. Click My Application on the left panel. <br>
+      2. Click Start New Application an follow the instructions.
+      or click
+    </div>
+
+    <div class="row mb-5">
+      <button @click="initApplication()" class="btn btn-info mx-auto">Start new application</button>
+    </div>
+  </div>
+  `
+}
 
 
 Vue.use(Vuex);
@@ -508,6 +528,7 @@ const store = new Vuex.Store({
 
 
 const routes = [
+  { path: "/home", component: Home },
   { path: "/application", component: Application },
   { path: "/programs", component: programs },
   { path: "/institutions/:progId/:progName", component: institution },
