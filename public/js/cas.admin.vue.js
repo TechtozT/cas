@@ -10,6 +10,7 @@ const store = new Vuex.Store({
     institutions: [],
     users: [],
     attributes: undefined,
+    notifications: [],
   },
 
   // Synchronous operations
@@ -67,6 +68,10 @@ const store = new Vuex.Store({
     loadApplications(state, applications) {
       state.applications = applications;
     },
+
+    loadNotifications(state, nots){
+      state.notifications = nots;
+    },
   },
 
   // Support asynchronous operations
@@ -83,6 +88,7 @@ const routes = [
   { path: "/users", component: casUsers },
   { path: "/results", component: casSchoolResults },
   { path: "/attributes", component: casAttributes },
+  { path: "/nots/:notId", component: Notification },
 ];
 
 const router = new VueRouter({
@@ -194,6 +200,18 @@ const vm = new Vue({
         .catch((err) => {
           alert("There was an error, please try again");
         });
+    },
+
+    loadNotifications(){
+      axios.get("/nots/user/all")
+      .then(res => {
+        if(res.data){
+          store.commit("loadNotifications", res.data);
+        }
+      })
+      .catch(err => {
+        alert("There was an error please try again")
+      })
     },
   },
 });

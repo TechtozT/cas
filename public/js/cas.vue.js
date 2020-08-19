@@ -405,29 +405,70 @@ const Application = {
   ,
 };
 
-/* Vue.component("user-reg", {
-  template:
+
+Vue.component("notification", {
+  props: ["not"],
+  template: 
   `
-  
+  <a @click="viewNot(not._id)" class="dropdown-item hover-pointer">
+  <i v-if="not.type==='important'" class="fas fa-gem" mr-2></i>
+  <b v-if="not.status==='unseen'"> {{ not.title }} </b>
+  <b v-else class="bg-light"> {{ not.title }} </b></a>
   `,
 
-  methods:{
-    register(user){
-      axios.post("/user/register", user)
-      .then(res=>{
-        if(res.data.token){
-          document.cookie = `Bearer ${res.data.token}`;
-          window.location.replace("/user");
-        } else{
-          alert("There was an error please try again");
-        }
-      })
-      .catch(err=>{
-        alert("There was an error");
-      })
+  methods: {
+    viewNot(id){
+      router.push({ path: `/nots/${id}` });
     }
   }
-}) */
+});
+
+Vue.component("nots", {
+  template:
+  `
+  <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+  <span class="dropdown-item dropdown-header">
+  {{ this.$store.state.notifications.length }} Notifications</span> 
+  <div class="dropdown-divider"></div>
+  <div v-for="not in this.$store.state.notifications">
+    <notification
+    :not="not"
+    :key="not._id"
+    ></notification>
+    <div class="dropdown-divider"></div>
+  </div>
+  <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a></div>
+  `,
+
+  created(){
+    this.$parent.loadNotifications();
+  },
+
+  methods: {
+    
+  }
+});
+
+const Notification = {
+  template:
+  `
+  <div class="card w-75 mr-auto ml-auto">
+    <h5 class="alert alert-light-blue">
+    {{ getNot().title }}
+    </h5>
+    <div v-html="getNot().body" class="card-body">
+    </div>
+  </div>
+  `,
+
+  methods: {
+    getNot(){
+      const id = this.$route.params.notId;
+      const not = this.$store.state.notifications.find(p => p._id === id);
+      return not;
+    }
+  }
+}
 
 
 
@@ -438,6 +479,7 @@ const store = new Vuex.Store({
   state: {
     application: [],
     initAppStatus: false,
+    notifications: [],
   },
 
 
@@ -456,6 +498,10 @@ const store = new Vuex.Store({
 
     initAppStatus(state){
       state.initAppStatus = true;
+    },
+
+    loadNotifications(state, nots){
+      state.notifications = nots;
     }
   }
 })
@@ -465,6 +511,7 @@ const routes = [
   { path: "/application", component: Application },
   { path: "/programs", component: programs },
   { path: "/institutions/:progId/:progName", component: institution },
+  { path: "/nots/:notId", component: Notification }
 ];
 
 const router = new VueRouter({
@@ -480,6 +527,16 @@ const vm = new Vue({
   },
 
   methods: {
-    
+    loadNotifications(){
+      axios.get("/nots/user/all")
+      .then(res => {
+        if(res.data){
+          store.commit("loadNotifications", res.data);
+        }
+      })
+      .catch(err => {
+        alert("There was an error please try again")
+      })
+    }
   },
 });

@@ -197,9 +197,9 @@
               }
               document.cookie = `Bearer ${info.token}`;
               if (info.role === "admin" || info.role === "super") {
-                window.location.replace("/admin");
+                window.location.replace("/admin#/dashboard");
               } else {
-                window.location.replace("/user");
+                window.location.replace("/user#/home");
               }
             },
             error: function (err) {
@@ -246,7 +246,7 @@
               }
 
               document.cookie = `Bearer ${info.token}`;
-              window.location.replace("/user");
+              window.location.replace("/user#/home");
             },
             error: function (err) {
               alert("Error on login");

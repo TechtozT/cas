@@ -1157,4 +1157,68 @@ const casAttributes = {
       this.$parent.loadAttr();
     }
   }
+};
+
+Vue.component("notification", {
+  props: ["not"],
+  template: 
+  `
+  <a @click="viewNot(not._id)" class="dropdown-item hover-pointer">
+  <i v-if="not.type==='important'" class="fas fa-gem" mr-2></i>
+  <b v-if="not.status==='unseen'"> {{ not.title }} </b>
+  <b v-else class="bg-light"> {{ not.title }} </b></a>
+  `,
+
+  methods: {
+    viewNot(id){
+      router.push({ path: `/nots/${id}` });
+    }
+  }
+});
+
+Vue.component("nots", {
+  template:
+  `
+  <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+  <span class="dropdown-item dropdown-header">
+  {{ this.$store.state.notifications.length }} Notifications</span> 
+  <div class="dropdown-divider"></div>
+  <div v-for="not in this.$store.state.notifications">
+    <notification
+    :not="not"
+    :key="not._id"
+    ></notification>
+    <div class="dropdown-divider"></div>
+  </div>
+  <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a></div>
+  `,
+
+  created(){
+    this.$parent.loadNotifications();
+  },
+
+  methods: {
+    
+  }
+});
+
+const Notification = {
+  template:
+  `
+  <div class="card w-75 mr-auto ml-auto">
+    <h5 class="alert alert-light-blue">
+    {{ getNot().title }}
+    </h5>
+    <div v-html="getNot().body" class="card-body">
+    </div>
+  </div>
+  `,
+
+  methods: {
+    getNot(){
+      const id = this.$route.params.notId;
+      const not = this.$store.state.notifications.find(p => p._id === id);
+      return not;
+    }
+  }
 }

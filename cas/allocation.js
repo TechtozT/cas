@@ -7,7 +7,13 @@
  * ?? Sort by entry point.
  */
 
-const { Application, Attribute, Institution } = require("../db/model");
+const {
+  Application,
+  Attribute,
+  Institution,
+  Notification,
+  Applicant,
+} = require("../db/model");
 
 const allocate = async () => {
   try {
@@ -36,7 +42,12 @@ const allocate = async () => {
             _id: {
               program: "$entry.program",
             },
-            doc: { $addToSet: { indexNo: "$indexNo", entry: "$entry" } },
+            doc: {
+              $addToSet: {
+                indexNo: "$indexNo",
+                entry: "$entry",
+              },
+            },
           },
         },
 
@@ -63,7 +74,7 @@ const allocate = async () => {
           for (let k = 0; k < doc.entry.institutions.length; k++) {
             // Check if user is already allocated
             if (allocatedIDs.includes(doc.indexNo.toLowerCase().trim())) {
-              console.log("Already allocated skipping", doc.indexNo);
+              // console.log("Already allocated skipping", doc.indexNo);
               continue;
             }
 
@@ -100,7 +111,7 @@ const allocate = async () => {
             }
             // Mark application as allocated
             allocatedIDs.push(doc.indexNo.toLowerCase().trim());
-            console.log(allocated);
+            // console.log(allocated);
 
             programDetails.programs[0].allocatedCandidates++;
 
@@ -121,12 +132,36 @@ const allocate = async () => {
                 doc.entry.institutions[k].name
               );
             }
+
+            // Create notification
+            let subscriber = await Applicant.findOne(
+              { indexNo: doc.indexNo },
+              { _id: 1 }
+            );
+
+            if (!subscriber) {
+              console.log("Failed to fetch subscriber");
+              continue
+            }
+            let not = new Notification({
+              type: "important",
+              title: "Allocation notification",
+              body: `You are allocated at <b class="alert alert-light-green">${doc.entry.institutions[k].instName} 
+              university</b> in <b class="alert alert-light-green">${doc.entry.progName}</b> program.
+              You are required to attend to the allocated university/institution for further
+              activities`,
+              subscriber: subscriber._id,
+              status: "unseen",
+            });
+
+            not = await not.save();
+            if (!not) {
+              console.log("Failed to create notification for ", doc.indexNo);
+            }
           }
         }
       }
     }
-
-    console.log(allocatedIDs);
 
     console.log("Allocation Complete");
   } catch (err) {
@@ -155,4 +190,4 @@ const resetAllocation = async () => {
 };
 
 // resetAllocation();
-// allocate();
+allocate();

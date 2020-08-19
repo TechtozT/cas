@@ -15,7 +15,7 @@ router.get("/login", (req, res) => {
 
 /* GET user page */
 router.get("/user", authU, (req, res) => {
-  res.render("user", { name: "CAS" });
+  res.render("user", { name: "CAS", index: req.indexNo });
 });
 
 /* GET admin page */

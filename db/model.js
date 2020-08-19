@@ -240,7 +240,8 @@ const notification = new Schema({
   title: { type: String, required: true },
   body: { type: String, required: true },
   //? Who to notify
-  subscribers: { type: ObjectID, required: true },
+  subscriber: { type: ObjectID, required: true },
+  status: { type: String, enum: ["seen", "read", "unseen"] },
 });
 
 module.exports = {
