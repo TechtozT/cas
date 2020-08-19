@@ -872,7 +872,7 @@ Vue.component("application", {
     getAllocatedInstName(app, instID){
       let inst;
       for (let i in app.entry){
-        inst = app.entry[i].institutions.find(pr => pr.inst === instID);
+        inst = app.entry[i].institutions.find(pr => pr._id === instID);
         if (inst) break;
       }
       if(!inst) return "Not allocated";
@@ -897,7 +897,7 @@ Vue.component("app-details", {
             <li v-for="(inst, index) in entry.institutions" class="list-group-item">
               {{ index + 1 }}: {{ inst.instName }}
               <i 
-              v-if="inst.inst === app.allocatedInst && entry.program === app.allocatedProg" 
+              v-if="inst._id === app.allocatedInst && entry.program === app.allocatedProg" 
               class="fas fa-check-circle float-right color-light-green"
               data-toggle="tooltip" title="Allocated to this institution"
               ></i>
