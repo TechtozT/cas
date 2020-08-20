@@ -1262,7 +1262,7 @@ const Dashboard = {
         <small-box
         :title="'Programs'"
         :icon="'fas fa-cubes'"
-        :item="this.$store.state.progs.length"
+        :item="getPrograms()"
         :box="'bg-success'"
         :url="'/programs'"
         ></small-box>
@@ -1288,9 +1288,23 @@ const Dashboard = {
   `,
 
   created(){
-    this.$parent.loadPrograms();
+    if(this.$parent.$data.role === "super"){
+      this.$parent.loadPrograms();
+    } else{
+      this.$parent.loadAdminPrograms();
+    }
     this.$parent.loadCriteria();
     this.$parent.loadInstitutions();
     this.$parent.loadApplications();
+  },
+
+  methods: {
+    getPrograms(){
+      if(this.$parent.$data.role === "super"){
+        return this.$store.state.progs.length;
+      }
+
+      return this.$store.state.progsAdm.length;
+    }
   }
 }
