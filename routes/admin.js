@@ -5,7 +5,6 @@ const router = express.Router();
 
 const {
   SchoolResult,
-  CollegeResult,
   Admin,
   Criteria,
   Program,
@@ -13,6 +12,8 @@ const {
   Attribute,
   Application,
 } = require("../db/model");
+
+const { allocate } = require("../cas/allocation");
 
 const { authA, decodeToken } = require("../auth/auth");
 const TCU_DEFAULT_ID = require("../env").TCU_DEFAULT_ID;
@@ -341,5 +342,18 @@ router.put("/attributes", authA, async (req, res) => {
     console.log(err);
   }
 });
+
+router.post("/allocate", authA, async(req, res)=>{
+  if(req.role !== "super"){
+    return res.json({msg: "Not authorized"});
+  }
+
+  try{
+    res.json({msg: "Allocation is in progress"});
+    await allocate();
+  } catch(err){
+    console.log(err);
+  }
+})
 
 module.exports = router;

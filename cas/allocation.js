@@ -189,5 +189,9 @@ const resetAllocation = async () => {
   if (!resInstAlloc) console.log("Failed to reset Institutions");
 };
 
-// resetAllocation();
+resetAllocation();
 // allocate();
+
+module.exports = {
+  allocate,
+}

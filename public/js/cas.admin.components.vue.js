@@ -1307,4 +1307,27 @@ const Dashboard = {
       return this.$store.state.progsAdm.length;
     }
   }
-}
+};
+
+Vue.component("allocate-btn", {
+  template:
+  `
+  <button @click="startAllocation()" 
+  class="btn btn-danger"
+  style="width: 100%; border-radius: 0;">
+  Start Allocation 
+  </button>
+  `,
+
+  methods: {
+    startAllocation(){
+      axios.post("/admin/allocate", {}).then(res => {
+        if (res.data){
+          alert("Allocation Process is in progress");
+        }
+      }).catch(err=>{
+        alert("There was an error please try again")
+      })
+    }
+  }
+})
