@@ -304,7 +304,7 @@ router.get("/applications", authA, async (req, res) => {
     if (!user) throw new Error("Error fetching user");
 
     applications = await Application.find({
-      "entry.institution.inst": user.institution,
+      "entry.institutions.inst": user.institution,
     });
 
     if (!applications) throw new Error("Error fetching applications");
