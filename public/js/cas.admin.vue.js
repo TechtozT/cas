@@ -81,6 +81,7 @@ const store = new Vuex.Store({
 // Adding new entity does not require different route, just use modal.
 // Details should not have different route, just call modal and deserialize the form.
 const routes = [
+  { path: "/dashboard", component: Dashboard },
   { path: "/applications", component: casApplications },
   { path: "/criteria", component: casCriteria },
   { path: "/programs", component: casPrograms },
@@ -124,6 +125,9 @@ const vm = new Vue({
     },
 
     loadPrograms() {
+      if(store.state.progs.length > 0){
+        return
+      }
       axios
         .get("/api/program")
         .then((res) => {
@@ -146,6 +150,9 @@ const vm = new Vue({
     },
 
     loadCriteria() {
+      if(store.state.criteria.length > 0){
+        return
+      }
       axios
         .get("/admin/criteria")
         .then((res) => {
@@ -157,6 +164,9 @@ const vm = new Vue({
     },
 
     loadInstitutions() {
+      if(store.state.institutions.length > 0){
+        return
+      }
       axios
         .get("/admin/institution")
         .then((res) => {
@@ -192,6 +202,9 @@ const vm = new Vue({
     },
 
     loadApplications() {
+      if(store.state.applications.length > 0){
+        return
+      }
       axios
         .get("/admin/applications")
         .then((res) => {

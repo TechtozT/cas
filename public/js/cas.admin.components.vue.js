@@ -1221,4 +1221,76 @@ const Notification = {
       return not;
     }
   }
+};
+
+Vue.component("small-box", {
+  props: ["title", "icon", "item", "box", "url"],
+  template:
+  `
+  <div class="col-lg-3 col-6">
+    <div :class="'small-box '+box">
+      <div class="inner">
+        <h3>{{ item }}</h3>
+
+        <p>{{ title }}</p>
+      </div>
+      <div class="icon">
+        <i :class="icon"></i>
+      </div>
+      <router-link :to="url" class="small-box-footer">
+        More info <i class="fas fa-arrow-circle-right"></i>
+      </router-link>
+    </div>
+  </div>
+  `
+})
+
+
+const Dashboard = {
+  template:
+  `
+    <div>
+      <div class="row">
+        <small-box
+        :title="'Institutions'"
+        :icon="'fas fa-school'"
+        :item="this.$store.state.institutions.length"
+        :box="'bg-info'"
+        :url="'institutions'"
+        ></small-box>
+
+        <small-box
+        :title="'Programs'"
+        :icon="'fas fa-cubes'"
+        :item="this.$store.state.progs.length"
+        :box="'bg-success'"
+        :url="'/programs'"
+        ></small-box>
+
+        <small-box
+        :title="'Criteria'"
+        :icon="'fas fa-filter'"
+        :item="this.$store.state.criteria.length"
+        :box="'bg-danger'"
+        :url="'/criteria'"
+        ></small-box>
+
+        <small-box
+        :title="'Applications'"
+        :icon="'fas fa-gem'"
+        :item="this.$store.state.applications.length"
+        :box="'bg-warning'"
+        :url="'/applications'"
+        ></small-box>
+
+      </div>
+    </div>
+  `,
+
+  created(){
+    this.$parent.loadPrograms();
+    this.$parent.loadCriteria();
+    this.$parent.loadInstitutions();
+    this.$parent.loadApplications();
+  }
 }
